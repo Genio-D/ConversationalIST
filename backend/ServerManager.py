@@ -39,6 +39,18 @@ class ServerManager:
     def getPublicIds(self):
         return ",".join([chat.id for chat in self.publicChatrooms])
 
+    def getJoinedIds(self, username):
+        user = self.findUser(username)
+        return ",".join(user.joinedChatrooms.keys())
+
+    def getChatroomMessages(self, chatId, messagesToRetrieveList):
+        messageList = []
+        print(messagesToRetrieveList)
+        chat = self.findChat(chatId)
+        for messageNumber in messagesToRetrieveList:
+            messageList.append(chat.messages[messageNumber].toDict())
+        return messageList
+
     def findUser(self, username):
         for user in self.users:
             if user.id == username:

@@ -9,8 +9,15 @@ class Message:
         self.time = datetime.now()
 
     def toJson(self):
-        return json.dumps({'type':self.messageType,
+        return json.dumps({'type':self.type,
             'content':self.content,
             'author':self.author,
             'timestamp':self.time.isoformat()
         })
+
+    def toDict(self):
+        return {'type':self.type,
+            'content':self.content,
+            'author':self.author,
+            'timestamp':self.time.isoformat()
+        }

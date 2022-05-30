@@ -42,5 +42,20 @@ def getPublicChatrooms():
     idList = serverManager.getPublicIds()
     return {'list' : idList}
 
+@app.route("/getJoinedChatrooms", methods=["GET"])
+def getJoinedChatrooms():
+    payload = request.get_json()
+    username = payload['username']
+    idList = serverManager.getJoinedIds(username)
+    return {'list' : idList}
+
+@app.route("/getChatroomMessages", methods=["GET"])
+def getChatroomMessages():
+    payload = request.get_json()
+    chatroomId = payload['chatroomId']
+    messagesToRetrieveList = payload['list']
+    messageList = serverManager.getChatroomMessages(chatroomId, messagesToRetrieveList)
+    return {'list' : messageList}
+
 def makeErrorResponse(message):
     return {'ERROR' : message}

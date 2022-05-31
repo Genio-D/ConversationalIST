@@ -1,6 +1,8 @@
 import json
 from User import User
+from Chatroom import Chatroom
 from PublicChatroom import PublicChatroom
+from GeoChatroom import GeoChatroom
 from Message import Message
 
 class ServerManager:
@@ -8,7 +10,7 @@ class ServerManager:
     def __init__(self, greetingMessage):
         self.greetingMessage = greetingMessage
         self.users = []
-        self.publicChatrooms = []
+        self.chatrooms = []
         self.chatroomIdCounter = 0
 
     def greeting(self):
@@ -23,7 +25,13 @@ class ServerManager:
 
     def createPublicChatroom(self, username):
         newId = self.getNextId()
-        self.publicChatrooms.append(PublicChatroom(newId))
+        self.chatrooms.append(PublicChatroom(newId))
+        self.findUser(username).joinChat(newId)
+        return True
+
+    def createGeoChatroom(self, username, latitude, longitude, radius):
+        newId = self.getNextId()
+        self.chatrooms.append(GeoChatroom(newId, latitude, longitude, radius))
         self.findUser(username).joinChat(newId)
         return True
 
@@ -37,11 +45,11 @@ class ServerManager:
         return str(self.chatroomIdCounter) 
 
     def getPublicIds(self):
-        return ",".join([chat.id for chat in self.publicChatrooms])
+        return [chat.id for chat in self.chatrooms if type(chat) is PublicChatroom]
 
-    def getJoinedIds(self, username):
+    def getJoinedChatrooms(self, username):
         user = self.findUser(username)
-        return ",".join(user.joinedChatrooms.keys())
+        return user.joinedChatrooms
 
     def getChatroomMessages(self, chatId, messagesToRetrieveList):
         messageList = []
@@ -51,6 +59,16 @@ class ServerManager:
             messageList.append(chat.messages[messageNumber].toDict())
         return messageList
 
+    def updateLastRead(self, username, chatId, lastRead):
+        user = self.findUser(username)
+        user.joinedChatrooms[chatId] = lastRead
+        return True
+
+    def joinRoom(self, username, chatId):
+        user = self.findUser(username)
+        user.joinChat(chatId)
+        return True
+
     def findUser(self, username):
         for user in self.users:
             if user.id == username:
@@ -58,7 +76,7 @@ class ServerManager:
         return None
 
     def findChat(self, chatId):
-        for chat in self.publicChatrooms:
+        for chat in self.chatrooms:
             if chat.id == chatId:
                 return chat
         return None

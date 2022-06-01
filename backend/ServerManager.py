@@ -49,7 +49,11 @@ class ServerManager:
 
     def getJoinedChatrooms(self, username):
         user = self.findUser(username)
-        return user.joinedChatrooms
+        chatrooms = [self.findChat(chatId) for chatId in user.joinedChatrooms]
+        chatInfo = {}
+        for chat in chatrooms:
+            chatInfo[chat.id] = len(chat.messages)
+        return chatInfo
 
     def getChatroomMessages(self, chatId, messagesToRetrieveList):
         messageList = []
@@ -58,11 +62,6 @@ class ServerManager:
         for messageNumber in messagesToRetrieveList:
             messageList.append(chat.messages[messageNumber].toDict())
         return messageList
-
-    def updateLastRead(self, username, chatId, lastRead):
-        user = self.findUser(username)
-        user.joinedChatrooms[chatId] = lastRead
-        return True
 
     def joinRoom(self, username, chatId):
         user = self.findUser(username)

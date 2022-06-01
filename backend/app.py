@@ -96,19 +96,14 @@ def getPublicChatrooms():
 EXAMPLE REQUEST
 {"username": "value1"}
 EXAMPLE RESPONSE
-{
-    "chats": {
-        "1": 0,
-        "2": 3
-    }
-}
+{"1": 54, "2": 86}
 """
 @app.route("/getJoinedChatrooms", methods=["GET"])
 def getJoinedChatrooms():
     payload = request.get_json()
     username = payload['username']
     chatInfo = serverManager.getJoinedChatrooms(username)
-    return {'chats' : chatInfo}
+    return chatInfo
 
 """
 EXAMPLE REQUEST
@@ -141,21 +136,6 @@ def getChatroomMessages():
     messagesToRetrieveList = payload['list']
     messageList = serverManager.getChatroomMessages(chatroomId, messagesToRetrieveList)
     return {'list' : messageList}
-
-"""
-EXAMPLE REQUEST
-{"username":"value1","chatroomId":"1","lastRead":3}
-EXAMPLE RESPONSE
-{}
-"""
-@app.route("/updateLastRead", methods=["POST"])
-def updateLastRead():
-    payload = request.get_json()
-    username = payload['username']
-    chatroomId = payload['chatroomId']
-    lastRead = payload['lastRead']
-    serverManager.updateLastRead(username, chatroomId, lastRead)
-    return {}
 
 """
 EXAMPLE REQUEST

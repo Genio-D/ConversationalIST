@@ -10,7 +10,7 @@ class ServerManager:
     def __init__(self, greetingMessage):
         self.greetingMessage = greetingMessage
         self.users = []
-        self.chatrooms = []
+        self.chatrooms = ["0-27", "A1"]
         self.chatroomIdCounter = 0
 
     def greeting(self):

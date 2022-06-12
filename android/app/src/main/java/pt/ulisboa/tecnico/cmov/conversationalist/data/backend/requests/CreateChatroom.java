@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.conversationalist.backend.requests;
+package pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests;
 
 public class CreateChatroom {
     private final String username;

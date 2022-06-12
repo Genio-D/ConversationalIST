@@ -1,24 +1,22 @@
-package pt.ulisboa.tecnico.cmov.conversationalist;
+package pt.ulisboa.tecnico.cmov.conversationalist.chatrooms;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.squareup.moshi.Moshi;
+import java.net.ServerSocket;
+import java.util.List;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import pt.ulisboa.tecnico.cmov.conversationalist.backend.BackendManager;
+import pt.ulisboa.tecnico.cmov.conversationalist.createchatroom.CreateChatroomActivity;
+import pt.ulisboa.tecnico.cmov.conversationalist.JoinChatroomActivity;
+import pt.ulisboa.tecnico.cmov.conversationalist.R;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 
 public class ChatroomsActivity extends AppCompatActivity {
 
@@ -26,20 +24,21 @@ public class ChatroomsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatrooms);
-        var chatrooms = BackendManager.getPublicChatrooms().getList();
-        var adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chatrooms);
-        ListView chatroomsListView = findViewById(R.id.chatroomsListView);
-        chatroomsListView.setAdapter(adapter);
-    }
+        BackendManager.listen();
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setContentView(R.layout.activity_chatrooms);
-        var chatrooms = BackendManager.getPublicChatrooms().getList();
+        var model = new ViewModelProvider(this).get(ChatroomsViewModel.class);
+        var chatrooms = model.getJoinedChatrooms().getValue();
         var adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chatrooms);
         ListView chatroomsListView = findViewById(R.id.chatroomsListView);
         chatroomsListView.setAdapter(adapter);
+
+        var observer = new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> s) {
+                adapter.notifyDataSetChanged();
+            }
+        };
+        model.getJoinedChatrooms().observe(this, observer);
     }
 
     public void onCreateChatroom(View view) {

@@ -7,10 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import pt.ulisboa.tecnico.cmov.conversationalist.backend.BackendManager;
+import java.util.ArrayList;
+import java.util.List;
+
+import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.JoinedChatrooms;
+import pt.ulisboa.tecnico.cmov.conversationalist.chatrooms.ChatroomsActivity;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

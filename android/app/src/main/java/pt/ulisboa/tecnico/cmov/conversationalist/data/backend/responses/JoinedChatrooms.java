@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.conversationalist.backend.responses;
+package pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses;
 
 import java.util.Map;
 

@@ -1,11 +1,42 @@
+from time import sleep
 from flask import Flask, request
 from ServerManager import ServerManager
 import json
+import threading
+import socket
 
 app = Flask(__name__)
 serverManager = ServerManager("Hi")
+clientSockets = {}
 
 #TODO: Error handling? JSON validation?
+
+def startServerSocket():
+    print("Starting server socket")
+    ServerSocket = socket.socket()
+    ServerSocket.bind(('127.0.0.1', 5001))
+    ServerSocket.listen()
+    print("Server socket started")
+    while True:
+        acceptClient(ServerSocket)
+
+def acceptClient(serverSocket):
+    Client, address = serverSocket.accept()
+    print("New client connected")
+    threading.Thread(target=handleClient, args=(Client,)).start()
+
+def handleClient(client):
+    print("waiting for this dude's message")
+    data = client.recv(2048)
+    username = data.decode('utf-8').strip()
+    print("created socket for user: " + username)
+    clientSockets[username] = client
+    #client.sendall(str.encode("gotcha, thanks " + username))
+    client.sendall(b"gotcha, thanks dude\n")
+    client.sendall(b"gotcha, thanks dude2\n")
+    client.sendall(b"gotcha, thanks dude3\n")
+        
+threading.Thread(target=startServerSocket).start()
 
 @app.route("/")
 def hello_world():
@@ -44,7 +75,10 @@ def postMessage():
     chatroomId = payload['chatroomId']
     messageType = payload['messageType']
     content = payload['content']
-    serverManager.postMessage(username, chatroomId, messageType, content)
+    memberList = serverManager.postMessage(username, chatroomId, messageType, content)
+    print(memberList)
+    print(clientSockets)
+    notifyMembers(memberList)
     return {}
 
 """
@@ -156,3 +190,8 @@ def makeErrorResponse(message):
 
 def makeOkResponse(message):
     return {'OK' : message}
+
+def notifyMembers(memberList):
+    for username in memberList:
+        if username in clientSockets:
+            clientSockets[username].sendall(b"its time to update man\n")

@@ -4,6 +4,10 @@ class Chatroom:
     def __init__(self, id):
         self.id = id
         self.messages = []
+        self.members = []
 
     def postMessage(self, message):
         self.messages.append(message)
+
+    def addMember(self, username):
+        self.members.append(username)

@@ -25,7 +25,9 @@ class ServerManager:
 
     def createPublicChatroom(self, username):
         newId = self.getNextId()
-        self.chatrooms.append(PublicChatroom(newId))
+        newChat = PublicChatroom(newId)
+        newChat.addMember(username)
+        self.chatrooms.append(newChat)
         self.findUser(username).joinChat(newId)
         return True
 
@@ -37,8 +39,9 @@ class ServerManager:
 
     def postMessage(self, username, chatroomId, messageType, content):
         message = Message(username, messageType, content)
-        self.findChat(chatroomId).postMessage(message)
-        return True
+        chat = self.findChat(chatroomId)
+        chat.postMessage(message)
+        return chat.members
 
     def getNextId(self):
         self.chatroomIdCounter += 1
@@ -65,7 +68,9 @@ class ServerManager:
 
     def joinRoom(self, username, chatId):
         user = self.findUser(username)
+        chat = self.findChat(chatId)
         user.joinChat(chatId)
+        chat.addMember(username)
         return True
 
     def findUser(self, username):

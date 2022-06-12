@@ -9,5 +9,8 @@ class Chatroom:
     def postMessage(self, message):
         self.messages.append(message)
 
-    def addMember(self, username):
-        self.members.append(username)
+    def addMember(self, user):
+        self.members.append(user)
+
+    def removeMember(self, user):
+        self.members.remove(user)

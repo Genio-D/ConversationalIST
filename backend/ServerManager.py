@@ -1,4 +1,5 @@
 import json
+from multiprocessing.sharedctypes import Value
 from User import User
 from Chatroom import Chatroom
 from PublicChatroom import PublicChatroom
@@ -10,7 +11,7 @@ class ServerManager:
     def __init__(self, greetingMessage):
         self.greetingMessage = greetingMessage
         self.users = []
-        self.chatrooms = ["0-27", "A1"]
+        self.chatrooms = []
         self.chatroomIdCounter = 0
 
     def greeting(self):
@@ -21,27 +22,31 @@ class ServerManager:
         if id not in [user.id for user in self.users]:
             self.users.append(User(id))
             return True
-        return False
+        raise ValueError("User already exists")
 
-    def createPublicChatroom(self, username):
-        newId = self.getNextId()
-        newChat = PublicChatroom(newId)
-        newChat.addMember(username)
-        self.chatrooms.append(newChat)
-        self.findUser(username).joinChat(newId)
-        return True
+    def addChatroom(self, chatroom, user):
+        if chatroom.id not in [chat.id for chat in self.chatrooms]:
+            chatroom.addMember(user)
+            user.joinChat(chatroom)
+            self.chatrooms.append(chatroom)
+        else:
+            raise ValueError("chatroom name already exists")
 
-    def createGeoChatroom(self, username, latitude, longitude, radius):
-        newId = self.getNextId()
-        self.chatrooms.append(GeoChatroom(newId, latitude, longitude, radius))
-        self.findUser(username).joinChat(newId)
-        return True
+    def createPublicChatroom(self, chatId, username):
+        newChat = PublicChatroom(chatId)
+        user = self.findUser(username)
+        self.addChatroom(newChat, user)
+
+    def createGeoChatroom(self, chatId, username, latitude, longitude, radius):
+        newChat = GeoChatroom(chatId, latitude, longitude, radius)
+        user = self.findUser(username)
+        self.addChatroom(newChat, user)
 
     def postMessage(self, username, chatroomId, messageType, content):
         message = Message(username, messageType, content)
         chat = self.findChat(chatroomId)
         chat.postMessage(message)
-        return chat.members
+        return [member.id for member in chat.members]
 
     def getNextId(self):
         self.chatroomIdCounter += 1
@@ -52,7 +57,7 @@ class ServerManager:
 
     def getJoinedChatrooms(self, username):
         user = self.findUser(username)
-        chatrooms = [self.findChat(chatId) for chatId in user.joinedChatrooms]
+        chatrooms = user.joinedChatrooms
         chatInfo = {}
         for chat in chatrooms:
             chatInfo[chat.id] = len(chat.messages)
@@ -66,12 +71,22 @@ class ServerManager:
             messageList.append(chat.messages[messageNumber].toDict())
         return messageList
 
+    def getChatroomMessage(self, chatId, messageNumber):
+        chat = self.findChat(chatId)
+        return chat.messages[messageNumber].toDict()
+
     def joinRoom(self, username, chatId):
         user = self.findUser(username)
         chat = self.findChat(chatId)
         user.joinChat(chatId)
-        chat.addMember(username)
+        chat.addMember(user)
         return True
+
+    def leaveRoom(self, username, chatId):
+        user = self.findUser(username)
+        chat = self.findChat(chatId)
+        user.leaveChat(chat)
+        chat.removeMember(user)
 
     def findUser(self, username):
         for user in self.users:

@@ -34,7 +34,7 @@ public class BackendManager {
         Log.d("Backend", "Opening Socket");
         executorService.submit(() -> {
             try {
-                var socket = new Socket("10.0.2.2", 8080);
+                var socket = new Socket("10.0.2.2", 5001);
                 Log.d("Backend", "connected");
                 var printWriter = new PrintWriter(socket.getOutputStream());
                 printWriter.println("hello");

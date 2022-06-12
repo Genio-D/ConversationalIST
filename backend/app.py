@@ -48,14 +48,13 @@ EXAMPLE REQUEST
 EXAMPLE RESPONSE
 {}
 """
-@app.route("/addUser", methods=["POST"])
-def addUser():
-    payload = request.get_json()
-    username = payload['username']
-    if(serverManager.addUser(username)):
-        return {}
-    else:
-        return makeErrorResponse("Username already exists")
+@app.route("/addUser/<username>", methods=["POST"])
+def addUser(username):
+    try:
+        serverManager.addUser(username)
+        return makeOkResponse()
+    except ValueError as e:
+        return makeErrorResponse(str(e))
 
 """
 EXAMPLE REQUEST
@@ -79,20 +78,21 @@ def postMessage():
     print(memberList)
     print(clientSockets)
     notifyMembers(memberList)
-    return {}
+    return makeOkResponse()
 
 """
 EXAMPLE REQUEST
-{"username": "value1"}
+{}
 EXAMPLE RESPONSE
 {}
 """
-@app.route("/createPublicChatroom", methods=["POST"])
-def createPublicChatroom():
-    payload = request.get_json()
-    username = payload['username']
-    serverManager.createPublicChatroom(username)
-    return {}
+@app.route("/createPublicChatroom/<chatId>/<username>", methods=["POST"])
+def createPublicChatroom(chatId, username):
+    try:
+        serverManager.createPublicChatroom(chatId, username)
+    except ValueError as e:
+        return makeErrorResponse(str(e))
+    return makeOkResponse()
 
 """
 EXAMPLE REQUEST
@@ -105,15 +105,16 @@ EXAMPLE REQUEST
 EXAMPLE RESPONSE
 {}
 """
-@app.route("/createGeoChatroom", methods=["POST"])
-def createGeoChatroom():
-    payload = request.get_json()
-    username = payload['username']
-    latitude = payload['latitude']
-    longitude = payload['longitude']
-    radius = payload['radius']
-    serverManager.createGeoChatroom(username, latitude, longitude, radius)
-    return {}
+@app.route("/createGeoChatroom/<chatId>/<username>/<latitude>/<longitude>/<radius>", methods=["POST"])
+def createGeoChatroom(chatId, username, latitude, longitude, radius):
+    latitude = float(latitude)
+    longitude = float(longitude)
+    radius = int(radius)
+    try:
+        serverManager.createGeoChatroom(chatId, username, latitude, longitude, radius)
+    except ValueError as e:
+        return makeErrorResponse(str(e))
+    return makeOkResponse()
 
 """
 EXAMPLE REQUEST
@@ -125,20 +126,38 @@ EXAMPLE RESPONSE
 def getPublicChatrooms():
     print("GET /getPublicChatrooms")
     idList = serverManager.getPublicIds()
-    return {'list' : idList}
+    return makeOkResponse({'list' : idList})
 
 """
 EXAMPLE REQUEST
-{"username": "value1"}
+{}
 EXAMPLE RESPONSE
 {"chatrooms": {"1": 54, "2": 86}}
 """
-@app.route("/getJoinedChatrooms", methods=["GET"])
-def getJoinedChatrooms():
-    payload = request.get_json()
-    username = payload['username']
+@app.route("/getJoinedChatrooms/<username>", methods=["GET"])
+def getJoinedChatrooms(username):
     chatInfo = serverManager.getJoinedChatrooms(username)
-    return {"chatrooms": chatInfo}
+    return makeOkResponse({"chatrooms": chatInfo})
+
+
+"""
+EXAMPLE REQUEST
+{}
+EXAMPLE RESPONSE
+{
+    "message":
+        {
+            "author": "value1",
+            "content": "supercool",
+            "timestamp": "2022-05-31T21:20:21.951677",
+            "type": "this"
+        }
+}
+"""
+@app.route("/chatrooms/<chatId>/<int:messageNumber>", methods=["GET"])
+def getMessage(chatId, messageNumber):
+    chatInfo = serverManager.getChatroomMessage(chatId, messageNumber)
+    return makeOkResponse({"message": chatInfo})
 
 """
 EXAMPLE REQUEST
@@ -163,34 +182,31 @@ EXAMPLE RESPONSE
         }
     ]
 }
-"""
+
 @app.route("/getChatroomMessages", methods=["GET"])
 def getChatroomMessages():
     payload = request.get_json()
     chatroomId = payload['chatroomId']
     messagesToRetrieveList = payload['list']
     messageList = serverManager.getChatroomMessages(chatroomId, messagesToRetrieveList)
-    return {'list' : messageList}
-
+    return makeOkResponse({'list' : messageList})
+"""
 """
 EXAMPLE REQUEST
-{"username":"value1","chatroomId":"1"}
+{}
 EXAMPLE RESPONSE
 {}
 """
-@app.route("/joinRoom", methods=["POST"])
-def joinRoom():
-    payload = request.get_json()
-    username = payload['username']
-    chatroomId = payload['chatroomId']
-    serverManager.joinRoom(username, chatroomId)
-    return {}
+@app.route("/joinRoom/<chatId>/<username>", methods=["POST"])
+def joinRoom(chatId, username):
+    serverManager.joinRoom(username, chatId)
+    return makeOkResponse()
 
 def makeErrorResponse(message):
-    return {'ERROR' : message}
+    return {'ERROR' : message, 'OK' : None}
 
-def makeOkResponse(message):
-    return {'OK' : message}
+def makeOkResponse(message="BIGSUCESS"):
+    return {'OK' : message, 'ERROR' : None}
 
 def notifyMembers(memberList):
     for username in memberList:

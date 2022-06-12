@@ -5,6 +5,9 @@
     <uses-feature android:name="android.hardware.camera"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ConversationalIST"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -26,6 +30,16 @@
         </provider>
         <activity
             android:name=".PublicChatroomActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".JoinChatroomActivity"
+            android:exported="false" />
+        <activity
+            android:name=".createchatroom.CreateChatroomActivity"
+            android:exported="false" />
+        <activity
+            android:name=".chatrooms.ChatroomsActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

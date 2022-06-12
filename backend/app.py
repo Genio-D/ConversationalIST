@@ -35,7 +35,7 @@ def handleClient(client):
     client.sendall(b"gotcha, thanks dude\n")
     client.sendall(b"gotcha, thanks dude2\n")
     client.sendall(b"gotcha, thanks dude3\n")
-        
+
 threading.Thread(target=startServerSocket).start()
 
 @app.route("/")
@@ -123,6 +123,7 @@ EXAMPLE RESPONSE
 """
 @app.route("/getPublicChatrooms", methods=["GET"])
 def getPublicChatrooms():
+    print("GET /getPublicChatrooms")
     idList = serverManager.getPublicIds()
     return {'list' : idList}
 
@@ -130,14 +131,14 @@ def getPublicChatrooms():
 EXAMPLE REQUEST
 {"username": "value1"}
 EXAMPLE RESPONSE
-{"1": 54, "2": 86}
+{"chatrooms": {"1": 54, "2": 86}}
 """
 @app.route("/getJoinedChatrooms", methods=["GET"])
 def getJoinedChatrooms():
     payload = request.get_json()
     username = payload['username']
     chatInfo = serverManager.getJoinedChatrooms(username)
-    return chatInfo
+    return {"chatrooms": chatInfo}
 
 """
 EXAMPLE REQUEST

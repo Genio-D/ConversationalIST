@@ -43,6 +43,7 @@ class ServerManager:
         self.addChatroom(newChat, user)
 
     def postMessage(self, username, chatroomId, messageType, content):
+        self.findUser(username)
         message = Message(username, messageType, content)
         chat = self.findChat(chatroomId)
         chat.postMessage(message)
@@ -52,7 +53,7 @@ class ServerManager:
         self.chatroomIdCounter += 1
         return str(self.chatroomIdCounter) 
 
-    def getPublicIds(self):
+    def getPublicChatrooms(self):
         return [chat.id for chat in self.chatrooms if type(chat) is PublicChatroom]
 
     def getJoinedChatrooms(self, username):
@@ -92,10 +93,10 @@ class ServerManager:
         for user in self.users:
             if user.id == username:
                 return user
-        return None
+        raise ValueError("user doesn't exist")
 
     def findChat(self, chatId):
         for chat in self.chatrooms:
             if chat.id == chatId:
                 return chat
-        return None
+        raise ValueError("chat doesn't exist")

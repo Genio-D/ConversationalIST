@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import pt.ulisboa.tecnico.cmov.conversationalist.chatrooms.ChatroomsActivity;
 
@@ -15,6 +16,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Button pubChatBtn = (Button) findViewById(R.id.publicChatroomButton);
+        pubChatBtn.setOnClickListener(v -> {
+            var intent = new Intent(this, PublicChatroomActivity.class);
+            startActivity(intent);
+        });
     }
 
     public void onAccept(View v) {

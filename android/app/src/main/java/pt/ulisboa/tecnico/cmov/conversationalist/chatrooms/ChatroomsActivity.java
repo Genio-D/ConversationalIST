@@ -24,7 +24,6 @@ public class ChatroomsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatrooms);
-        BackendManager.listen();
 
         var model = new ViewModelProvider(this).get(ChatroomsViewModel.class);
         var chatrooms = model.getJoinedChatrooms().getValue();

@@ -31,6 +31,5 @@ public class CreateChatroomActivity extends AppCompatActivity {
         EditText createChatroomEditText = findViewById(R.id.chatroomIdEditText);
         Spinner spinner = findViewById(R.id.optionsSpinner);
         //int pos = spinner.getSelectedItemPosition();
-        BackendManager.createPublicChatroom("Velhinho");
     }
 }

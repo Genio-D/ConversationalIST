@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import pt.ulisboa.tecnico.cmov.conversationalist.chatrooms.ChatroomsActivity;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 
 public class MainActivity extends AppCompatActivity {
 

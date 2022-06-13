@@ -1,3 +1,4 @@
+from email import message
 from time import sleep
 from flask import Flask, request
 from ServerManager import ServerManager
@@ -48,9 +49,11 @@ EXAMPLE REQUEST
 EXAMPLE RESPONSE
 {}
 """
-@app.route("/addUser/<username>", methods=["POST"])
-def addUser(username):
+@app.route("/addUser", methods=["POST"])
+def addUser():
     try:
+        payload = request.get_json()
+        username = payload['username']
         serverManager.addUser(username)
         return makeOkResponse()
     except ValueError as e:
@@ -69,34 +72,44 @@ EXAMPLE RESPONSE
 """
 @app.route("/postMessage", methods=["POST"])
 def postMessage():
-    payload = request.get_json()
-    username = payload['username']
-    chatroomId = payload['chatroomId']
-    messageType = payload['messageType']
-    content = payload['content']
-    memberList = serverManager.postMessage(username, chatroomId, messageType, content)
-    print(memberList)
-    print(clientSockets)
-    notifyMembers(memberList)
-    return makeOkResponse()
-
-"""
-EXAMPLE REQUEST
-{}
-EXAMPLE RESPONSE
-{}
-"""
-@app.route("/createPublicChatroom/<chatId>/<username>", methods=["POST"])
-def createPublicChatroom(chatId, username):
     try:
-        serverManager.createPublicChatroom(chatId, username)
+        payload = request.get_json()
+        username = payload['username']
+        chatroomId = payload['chatroomId']
+        messageType = payload['messageType']
+        content = payload['content']
+        memberList = serverManager.postMessage(username, chatroomId, messageType, content)
+        print(memberList)
+        print(clientSockets)
+        notifyMembers(memberList)
+        return makeOkResponse()
     except ValueError as e:
         return makeErrorResponse(str(e))
-    return makeOkResponse()
 
 """
 EXAMPLE REQUEST
 {
+    "chatId": "1",
+    "username": "value1"
+}
+EXAMPLE RESPONSE
+{}
+"""
+@app.route("/createPublicChatroom", methods=["POST"])
+def createPublicChatroom():
+    try:
+        payload = request.get_json()
+        chatId = payload['chatId']
+        username = payload['username']
+        serverManager.createPublicChatroom(chatId, username)
+        return makeOkResponse()
+    except ValueError as e:
+        return makeErrorResponse(str(e))
+
+"""
+EXAMPLE REQUEST
+{
+    "chatId": "1"
 	"username": "value1",
     "latitude": 123.123,
     "longitude": 321.321,
@@ -105,16 +118,19 @@ EXAMPLE REQUEST
 EXAMPLE RESPONSE
 {}
 """
-@app.route("/createGeoChatroom/<chatId>/<username>/<latitude>/<longitude>/<radius>", methods=["POST"])
-def createGeoChatroom(chatId, username, latitude, longitude, radius):
-    latitude = float(latitude)
-    longitude = float(longitude)
-    radius = int(radius)
+@app.route("/createGeoChatroom", methods=["POST"])
+def createGeoChatroom():
+    payload = request.get_json()
+    chatId = payload['chatId']
+    username = payload['username']
+    latitude = payload['latitude']
+    longitude = payload['longitude']
+    radius = payload['radius']
     try:
         serverManager.createGeoChatroom(chatId, username, latitude, longitude, radius)
+        return makeOkResponse()
     except ValueError as e:
         return makeErrorResponse(str(e))
-    return makeOkResponse()
 
 """
 EXAMPLE REQUEST
@@ -125,7 +141,7 @@ EXAMPLE RESPONSE
 @app.route("/getPublicChatrooms", methods=["GET"])
 def getPublicChatrooms():
     print("GET /getPublicChatrooms")
-    idList = serverManager.getPublicIds()
+    idList = serverManager.getPublicChatrooms()
     return makeOkResponse({'list' : idList})
 
 """
@@ -136,29 +152,31 @@ EXAMPLE RESPONSE
 """
 @app.route("/getJoinedChatrooms/<username>", methods=["GET"])
 def getJoinedChatrooms(username):
-    chatInfo = serverManager.getJoinedChatrooms(username)
-    return makeOkResponse({"chatrooms": chatInfo})
-
+    try:
+        chatInfo = serverManager.getJoinedChatrooms(username)
+        print({"chatrooms": chatInfo})
+        return makeOkResponse({"chatrooms": chatInfo})
+    except ValueError as e:
+        return makeErrorResponse(str(e))
 
 """
 EXAMPLE REQUEST
 {}
 EXAMPLE RESPONSE
 {
-    "message":
-        {
-            "author": "value1",
-            "content": "supercool",
-            "timestamp": "2022-05-31T21:20:21.951677",
-            "type": "this"
-        }
+    "author": "value1",
+    "content": "supercool",
+    "timestamp": "2022-05-31T21:20:21.951677",
+    "type": "this"
 }
 """
 @app.route("/chatrooms/<chatId>/<int:messageNumber>", methods=["GET"])
 def getMessage(chatId, messageNumber):
-    chatInfo = serverManager.getChatroomMessage(chatId, messageNumber)
-    return makeOkResponse({"message": chatInfo})
-
+    try:
+        chatInfo = serverManager.getChatroomMessage(chatId, messageNumber)
+        return makeOkResponse(chatInfo)
+    except ValueError as e:
+        return makeErrorResponse(str(e))
 """
 EXAMPLE REQUEST
 {
@@ -191,22 +209,34 @@ def getChatroomMessages():
     messageList = serverManager.getChatroomMessages(chatroomId, messagesToRetrieveList)
     return makeOkResponse({'list' : messageList})
 """
+
 """
 EXAMPLE REQUEST
-{}
+{
+    "chatId": "1",
+    "username": "value1"
+}
 EXAMPLE RESPONSE
 {}
 """
-@app.route("/joinRoom/<chatId>/<username>", methods=["POST"])
-def joinRoom(chatId, username):
-    serverManager.joinRoom(username, chatId)
-    return makeOkResponse()
+@app.route("/joinRoom", methods=["POST"])
+def joinRoom():
+    try:
+        payload = request.get_json()
+        username = payload['username']
+        chatId = payload['chatId']
+        serverManager.joinRoom(username, chatId)
+        return makeOkResponse()
+    except ValueError as e:
+        return makeErrorResponse(str(e))
 
-def makeErrorResponse(message):
-    return {'ERROR' : message, 'OK' : None}
+def makeErrorResponse(errorMessage):
+    return {'errorMessage' : errorMessage, 'error': True}
 
-def makeOkResponse(message="BIGSUCESS"):
-    return {'OK' : message, 'ERROR' : None}
+def makeOkResponse(response={}):
+    response['errorMessage'] = None
+    response['error'] = False
+    return response
 
 def notifyMembers(memberList):
     for username in memberList:

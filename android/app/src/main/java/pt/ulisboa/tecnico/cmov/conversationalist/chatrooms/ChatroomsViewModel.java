@@ -12,7 +12,7 @@ public class ChatroomsViewModel extends ViewModel {
 
     public MutableLiveData<List<String>> getJoinedChatrooms() {
         if (joinedChatrooms == null) {
-            joinedChatrooms = new MutableLiveData<>(BackendManager.getPublicChatrooms().getList());
+            joinedChatrooms = new MutableLiveData<>();
         }
         return joinedChatrooms;
     }

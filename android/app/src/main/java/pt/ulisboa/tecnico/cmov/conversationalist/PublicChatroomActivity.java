@@ -95,7 +95,8 @@ public class PublicChatroomActivity extends AppCompatActivity {
                 var path = intent.getStringExtra("path");
                 Log.d("Broadcast receiver", "new message: " + path);
                 Data.getMessageCache().getMessage(path);
-                //adapter.notifyItemInserted(adapter.getItemCount() - 1);
+                Data.updateJoinedChatrooms();
+                adapter.notifyItemInserted(adapter.getItemCount() - 1);
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(br, new IntentFilter("new message"));

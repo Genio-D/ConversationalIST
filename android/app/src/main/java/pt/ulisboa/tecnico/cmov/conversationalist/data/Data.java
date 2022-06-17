@@ -16,7 +16,11 @@ public class Data {
     private static Observable<Boolean> received;
 
     public synchronized static String getUsername() {
-        return username;
+        if (username == null) {
+            throw new RuntimeException("Not username defined yet");
+        } else {
+            return username;
+        }
     }
 
     public synchronized static void setUsername(String username) {
@@ -29,12 +33,10 @@ public class Data {
     }
 
     public synchronized static JoinedChatrooms getJoinedChatrooms() {
-        try {
+        if (joinedChatrooms == null) {
             joinedChatrooms = BackendManager.getJoinedChatrooms(getUsername());
-            return joinedChatrooms;
-        } catch (RuntimeException e) {
-            return joinedChatrooms;
         }
+        return joinedChatrooms;
     }
 
     public synchronized static void updateJoinedChatrooms() {

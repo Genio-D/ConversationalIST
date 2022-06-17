@@ -36,11 +36,13 @@ public class CreateChatroomActivity extends AppCompatActivity {
         switch (pos) {
             case 0:
                 BackendManager.createPublicChatroom(Data.getUsername(), chatId);
+                Data.updateJoinedChatrooms();
                 break;
             case 1:
                 break;
             case 2:
                 BackendManager.createGeoChatroom(Data.getUsername(), chatId, 1.5, 1.5, 1.5);
+                Data.updateJoinedChatrooms();
         }
         finish();
     }

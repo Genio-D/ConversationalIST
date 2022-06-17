@@ -1,10 +1,8 @@
 package pt.ulisboa.tecnico.cmov.conversationalist;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +12,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Objects;
+
+import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final String chatId;
 
-    private ArrayList<ChatMessage> items;
-    Context context;
+    private ChatMessage getMessage(int position) {
+        return Data.getMessageCache().getMessage(chatId + "/" + position);
+    }
+
+    public ChatAdapter(String chatId) {
+        this.chatId = chatId;
+    }
 
     public static class TextMessageViewHolder extends RecyclerView.ViewHolder {
 
@@ -50,11 +55,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public ChatAdapter(Context context, ArrayList<ChatMessage> data) {
-        this.context = context;
-        this.items = data;
-    }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,20 +66,21 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case ChatMessage.IMAGE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_image_row, parent, false);
                 return new ImageMessageViewHolder(view);
+            default:
+                throw new RuntimeException("Chat message type not recognized");
         }
-        return null;
     }
 
     @Override
     public int getItemViewType(int position) {
         /*make requests here*/
 
-        return items.get(position).getType();
+        return getMessage(position).getType();
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ChatMessage message = items.get(position);
+        ChatMessage message = getMessage(position);
         if(message != null) {
             switch(message.getType()) {
                 case ChatMessage.TEXT:
@@ -100,7 +101,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return items.size();
+        var count = Data.getJoinedChatrooms().getChatrooms().get(chatId);
+        return Objects.requireNonNullElse(count, 0);
     }
-
 }

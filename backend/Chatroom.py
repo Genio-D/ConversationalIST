@@ -6,6 +6,9 @@ class Chatroom:
         self.messages = []
         self.members = []
 
+    def getMessages(self):
+        return self.messages
+
     def postMessage(self, message):
         self.messages.append(message)
 

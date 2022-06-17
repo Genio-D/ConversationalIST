@@ -32,10 +32,17 @@ def handleClient(client):
     username = data.decode('utf-8').strip()
     print("created socket for user: " + username)
     clientSockets[username] = client
-    #client.sendall(str.encode("gotcha, thanks " + username))
-    client.sendall(b"gotcha, thanks dude\n")
-    client.sendall(b"gotcha, thanks dude2\n")
-    client.sendall(b"gotcha, thanks dude3\n")
+    client.sendall(str.encode("gotcha, thanks " + username + "\n"))
+
+def notifyClients(memberList, chatId, messageNumber):
+    try:
+        for clientName, clientSocket in clientSockets.items():
+            if clientName in memberList:
+                clientSocket.sendall(str.encode(f"{chatId}/{messageNumber}\n"))
+                print(f"notified {clientName} with -> {chatId}/{messageNumber}")
+    except ValueError as e:
+        print(e)
+
 
 threading.Thread(target=startServerSocket).start()
 
@@ -45,7 +52,10 @@ def hello_world():
 
 """
 EXAMPLE REQUEST
-{"username": "value1"}
+{
+    "username": "value1",
+    "password": "password1"
+}
 EXAMPLE RESPONSE
 {}
 """
@@ -78,10 +88,10 @@ def postMessage():
         chatroomId = payload['chatroomId']
         messageType = payload['messageType']
         content = payload['content']
-        memberList = serverManager.postMessage(username, chatroomId, messageType, content)
-        print(memberList)
-        print(clientSockets)
-        notifyMembers(memberList)
+        memberList, messageNumber = serverManager.postMessage(username, chatroomId, messageType, content)
+        print(f"memberList: {memberList}")
+        print(f"messageNumber: {messageNumber}")
+        notifyClients(memberList, chatroomId, messageNumber)
         return makeOkResponse()
     except ValueError as e:
         return makeErrorResponse(str(e))
@@ -237,8 +247,3 @@ def makeOkResponse(response={}):
     response['errorMessage'] = None
     response['error'] = False
     return response
-
-def notifyMembers(memberList):
-    for username in memberList:
-        if username in clientSockets:
-            clientSockets[username].sendall(b"its time to update man\n")

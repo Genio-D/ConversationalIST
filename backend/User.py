@@ -6,6 +6,9 @@ class User:
         #stores joined chatrooms
         self.joinedChatrooms = []
 
+    def getJoinedChatrooms(self):
+        return self.joinedChatrooms
+
     def joinChat(self, chatroom):
         self.joinedChatrooms.append(chatroom)
 

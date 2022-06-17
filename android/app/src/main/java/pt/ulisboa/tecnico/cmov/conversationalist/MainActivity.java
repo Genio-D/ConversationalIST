@@ -1,14 +1,13 @@
 package pt.ulisboa.tecnico.cmov.conversationalist;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 
-import pt.ulisboa.tecnico.cmov.conversationalist.chatrooms.ChatroomsActivity;
-import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,8 +17,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void onAccept(View v) {
-        var intent = new Intent(this, ChatroomsActivity.class);
-        startActivity(intent);
+    public void onRegister(View v) {
+        EditText usernameEditText = findViewById(R.id.usernameEditText);
+        var username = usernameEditText.getText().toString();
+        Data.registerUsername(username);
+        startService(new Intent(this, UpdateListenerService.class));
+        startActivity(new Intent(this, ChatroomsActivity.class));
+    }
+
+    public void onLogin(View v) {
+        EditText usernameEditText = findViewById(R.id.usernameEditText);
+        var username = usernameEditText.getText().toString();
+        Data.setUsername(username);
+        startService(new Intent(this, UpdateListenerService.class));
+        startActivity(new Intent(this, ChatroomsActivity.class));
     }
 }

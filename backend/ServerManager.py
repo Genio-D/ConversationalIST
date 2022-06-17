@@ -46,8 +46,10 @@ class ServerManager:
         self.findUser(username)
         message = Message(username, messageType, content)
         chat = self.findChat(chatroomId)
-        chat.postMessage(message)
-        return [member.id for member in chat.members]
+        chat.postMessage(message)    
+        memberList = [member.id for member in chat.members]
+        messageNumber = len(chat.getMessages()) - 1
+        return memberList, messageNumber 
 
     def getNextId(self):
         self.chatroomIdCounter += 1

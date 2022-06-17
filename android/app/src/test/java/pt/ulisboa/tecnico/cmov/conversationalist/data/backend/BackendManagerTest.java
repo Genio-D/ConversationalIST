@@ -54,8 +54,8 @@ public class BackendManagerTest {
                 RuntimeException.class,
                 () -> BackendManager.postMessage(username, "asd", messageType, content));
 
-        assertEquals(content, BackendManager.getMessage(publicChatId, 0).getContent());
-        assertEquals(content, BackendManager.getMessage(geoChatId, 0).getContent());
+        assertEquals(content, BackendManager.getMessage("/" + publicChatId + "/" + 0).getContent());
+        assertEquals(content, BackendManager.getMessage("/" + geoChatId + "/" + 0).getContent());
 
         var username2 = "genio";
         BackendManager.addUser(username2);

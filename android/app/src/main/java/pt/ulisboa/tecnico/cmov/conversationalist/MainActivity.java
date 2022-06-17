@@ -36,10 +36,12 @@ public class MainActivity extends AppCompatActivity {
             Log.i("mytag", "wrote " + username + " to shared preferences");
             Intent data = new Intent();
             setResult(RESULT_OK, data);
-            MainActivity.this.finish();
+            finish();
         }
-        startService(new Intent(this, UpdateListenerService.class));
-        startActivity(new Intent(this, ChatroomsActivity.class));
+        else {
+            startService(new Intent(this, UpdateListenerService.class));
+            startActivity(new Intent(this, ChatroomsActivity.class));
+        }
     }
 
     public void onLogin(View v) {

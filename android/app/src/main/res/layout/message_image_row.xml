@@ -12,7 +12,7 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/locationTimeId"
+            android:id="@+id/imageTimeId"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -20,7 +20,7 @@
             android:text="TextView" />
 
         <TextView
-            android:id="@+id/locationAuthorId"
+            android:id="@+id/imageAuthorId"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

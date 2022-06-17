@@ -18,6 +18,8 @@ import java.util.Objects;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
+
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final String chatId;
 

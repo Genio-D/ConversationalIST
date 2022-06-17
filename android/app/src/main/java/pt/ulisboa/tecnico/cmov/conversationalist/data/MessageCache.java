@@ -10,7 +10,7 @@ public class MessageCache {
     private final LruCache<String, ChatMessage> messageCache;
 
     public MessageCache() {
-        this.messageCache = new LruCache<>(50) {
+        this.messageCache = new LruCache<>(1) {
             @Override
             protected ChatMessage create(String key) {
                 var message = BackendManager.getMessage(key);

@@ -1,40 +1,36 @@
 package pt.ulisboa.tecnico.cmov.conversationalist;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.ContentResolver;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.TextView;
 
-import java.io.ByteArrayInputStream;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
@@ -49,8 +45,8 @@ public class PublicChatroomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         var chatId = getIntent().getStringExtra("chatId");
-
         setContentView(R.layout.activity_public_chatroom);
+        ((TextView) findViewById(R.id.publicChatIdTextView)).setText(chatId);
         /*create temporary file to store camera photos*/
         Uri tempImagePath = initTempUri();
         registerTakePictureLauncher(tempImagePath, chatId);
@@ -64,16 +60,16 @@ public class PublicChatroomActivity extends AppCompatActivity {
         String apiKey = applicationInfo.metaData.getString("com.google.android.geo.API_KEY");
         Places.initialize(getApplicationContext(), apiKey);
         PlacesClient placesClient = Places.createClient(this);
-        ImageButton geoBtn = (ImageButton) findViewById(R.id.privateUploadLocationId);
+        ImageButton geoBtn = (ImageButton) findViewById(R.id.publicUploadLocationId);
         geoBtn.setOnClickListener(v -> {
             Intent localizationIntent = new Intent(this, MapsActivity.class);
             startActivity(localizationIntent);
         });
 
-        recyclerView = (RecyclerView) findViewById(R.id.privateChatRecyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.publicChatRecyclerView);
 
         this.adapter = new ChatAdapter(chatId);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.privateChatRecyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.publicChatRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -94,14 +90,14 @@ public class PublicChatroomActivity extends AppCompatActivity {
                 var path = intent.getStringExtra("path");
                 Log.d("Broadcast receiver", "new message: " + path);
                 Data.getMessageCache().getMessage(path);
-                adapter.notifyItemInserted(adapter.getItemCount() - 1);
+                //adapter.notifyItemInserted(adapter.getItemCount() - 1);
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(br, new IntentFilter("new message"));
     }
 
     private void registerTakePictureLauncher(Uri tempImagePath, String chatId) {
-        ImageButton imgBtn = (ImageButton) findViewById(R.id.privateUploadPictureId);
+        ImageButton imgBtn = (ImageButton) findViewById(R.id.publicUploadPictureId);
         ActivityResultLauncher<Uri> resultLauncher = registerForActivityResult(new ActivityResultContracts.TakePicture(),
                 new ActivityResultCallback<Boolean>() {
                     @Override

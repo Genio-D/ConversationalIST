@@ -6,7 +6,7 @@
         <entry key="app/src/main/res/layout/activity_chatrooms.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_create_chatroom.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_join_chatroom.xml" value="0.35625" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_public_chatroom.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/message_image_row.xml" value="0.5" />
         <entry key="app/src/main/res/layout/message_text_row.xml" value="0.5" />

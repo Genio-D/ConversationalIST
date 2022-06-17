@@ -13,12 +13,6 @@
         android:layout_height="50dp"
         android:text="Lore Ipsum" />
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/arrow_up_float" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
@@ -41,7 +35,8 @@
             android:layout_height="match_parent"
             android:layout_weight="0"
             android:hint="Write your message here"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColorHint="#757575" />
 
         <ImageButton
             android:id="@+id/publicUploadPictureId"

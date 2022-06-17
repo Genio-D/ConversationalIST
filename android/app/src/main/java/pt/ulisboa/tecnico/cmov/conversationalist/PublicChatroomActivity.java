@@ -4,13 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -21,7 +23,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
@@ -34,15 +38,14 @@ public class PublicChatroomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        var chatId = getIntent().getStringExtra("chatId");
+
         setContentView(R.layout.activity_public_chatroom);
-        ImageButton imgBtn = (ImageButton) findViewById(R.id.publicUploadPictureId);
         Uri tempImagePath = initTempUri();
-        Log.i("mytag", "created image path : " + tempImagePath.toString());
-        registerTakePictureLauncher(tempImagePath);
+        registerTakePictureLauncher(tempImagePath, chatId);
 
         recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
 
-        var chatId = getIntent().getStringExtra("chatId");
         this.adapter = new ChatAdapter(chatId);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
@@ -71,21 +74,26 @@ public class PublicChatroomActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(br, new IntentFilter("new message"));
     }
 
-    private void registerTakePictureLauncher(Uri tempImagePath) {
+    private void registerTakePictureLauncher(Uri tempImagePath, String chatId) {
         ImageButton imgBtn = (ImageButton) findViewById(R.id.publicUploadPictureId);
         ActivityResultLauncher<Uri> resultLauncher = registerForActivityResult(new ActivityResultContracts.TakePicture(),
                 new ActivityResultCallback<Boolean>() {
                     @Override
                     public void onActivityResult(Boolean result) {
-                        Log.i("mytag", "GREAT success");
-                        ImageView imageView = (ImageView) findViewById(R.id.imageView4);
-                        imageView.setImageURI(null);
-                        imageView.setImageURI(tempImagePath);
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), tempImagePath);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                            byte[] b = baos.toByteArray();
+                            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                            BackendManager.postMessage(Data.getUsername(), chatId, "image", encodedImage);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
         imgBtn.setOnClickListener((v) -> {
             resultLauncher.launch(tempImagePath);
-            Log.i("mytag", "great success");
         });
 
     }

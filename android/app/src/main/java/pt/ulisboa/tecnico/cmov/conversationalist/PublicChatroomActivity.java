@@ -9,10 +9,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -40,16 +42,18 @@ public class PublicChatroomActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ChatAdapter adapter;
+    private final static int LOCATION_REQUEST_CODE = 1001;
+    private String chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        var chatId = getIntent().getStringExtra("chatId");
+        this.chatId = getIntent().getStringExtra("chatId");
         setContentView(R.layout.activity_public_chatroom);
         ((TextView) findViewById(R.id.publicChatIdTextView)).setText(chatId);
         /*create temporary file to store camera photos*/
         Uri tempImagePath = initTempUri();
-        registerTakePictureLauncher(tempImagePath, chatId);
+        registerTakePictureLauncher(tempImagePath);
         Context context = getApplicationContext();
         ApplicationInfo applicationInfo = null;
         try {
@@ -63,7 +67,8 @@ public class PublicChatroomActivity extends AppCompatActivity {
         ImageButton geoBtn = (ImageButton) findViewById(R.id.publicUploadLocationId);
         geoBtn.setOnClickListener(v -> {
             Intent localizationIntent = new Intent(this, MapsActivity.class);
-            startActivity(localizationIntent);
+            localizationIntent.putExtra("getLocation", true);
+            startActivityForResult(localizationIntent, LOCATION_REQUEST_CODE);
         });
 
         recyclerView = (RecyclerView) findViewById(R.id.publicChatRecyclerView);
@@ -96,7 +101,7 @@ public class PublicChatroomActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(br, new IntentFilter("new message"));
     }
 
-    private void registerTakePictureLauncher(Uri tempImagePath, String chatId) {
+    private void registerTakePictureLauncher(Uri tempImagePath) {
         ImageButton imgBtn = (ImageButton) findViewById(R.id.publicUploadPictureId);
         ActivityResultLauncher<Uri> resultLauncher = registerForActivityResult(new ActivityResultContracts.TakePicture(),
                 new ActivityResultCallback<Boolean>() {
@@ -122,6 +127,19 @@ public class PublicChatroomActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == LOCATION_REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK) {
+                String locationInfo = data.getStringExtra("location");
+                String[] latLong = locationInfo.split(",");
+                Log.i("mytag", "latitude is " + latLong[0] + "and longitude is " + latLong[1]);
+                // POST MESSAGE HERE
+                BackendManager.postMessage(Data.getUsername(), chatId, "text", "https://www.google.com/maps/search/?api=1&query=" + locationInfo);
+            }
+        }
+    }
 
     private Uri initTempUri() {
         File tempImagesDir = new File(getApplicationContext().getFilesDir(), getString(R.string.temp_images_dir));

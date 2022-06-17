@@ -28,6 +28,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -73,6 +74,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
 
+    private Marker choiceMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,20 +179,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        this.choiceMarker = mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        Marker chooseMarker = this.choiceMarker;
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.setOnMarkerClickListener((listener) -> {
             Intent intent = getIntent();
             if(intent.getBooleanExtra("getLocation", false)){
                 Intent data = new Intent();
-                data.putExtra("location", mMap.getCameraPosition().target);
+                data.putExtra("location", "" + listener.getPosition().latitude + "," + listener.getPosition().longitude);
                 setResult(RESULT_OK, data);
                 MapsActivity.this.finish();
             }
             return false;
+        });
+        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                // Get the center of the Map.
+                LatLng centerOfMap = mMap.getCameraPosition().target;
+
+                // Update your Marker's position to the center of the Map.
+                chooseMarker.setPosition(centerOfMap);
+            }
         });
 
         // Enable the zoom controls for the map
@@ -285,7 +297,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     mLastKnownLocation.getLongitude());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     lastKnown, DEFAULT_ZOOM));
-                            mMap.addMarker(new MarkerOptions().position(lastKnown).title("Current Location"));
+                            // mMap.addMarker(new MarkerOptions().position(lastKnown).title("Current Location"));
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -328,29 +340,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void onItemClick(AdapterView parent, View v, int position, long id) {
             // position will give us the index of which place was selected in the array
             LatLng markerLatLng = mLikelyPlaceLatLngs[position];
-            Intent intent = getIntent();
-            if(intent.getBooleanExtra("getLocation", false)){
-                Intent data = new Intent();
-                data.putExtra("location", markerLatLng);
-                setResult(RESULT_OK, data);
-                MapsActivity.this.finish();
+            String markerSnippet = mLikelyPlaceAddresses[position];
+            if (mLikelyPlaceAttributions[position] != null) {
+                markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[position];
             }
-            else {
-                String markerSnippet = mLikelyPlaceAddresses[position];
-                if (mLikelyPlaceAttributions[position] != null) {
-                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[position];
-                }
 
-                // Add a marker for the selected place, with an info window
-                // showing information about that place.
-                mMap.addMarker(new MarkerOptions()
-                        .title(mLikelyPlaceNames[position])
-                        .position(markerLatLng)
-                        .snippet(markerSnippet));
+            // Add a marker for the selected place, with an info window
+            // showing information about that place.
+            mMap.addMarker(new MarkerOptions()
+                    .title(mLikelyPlaceNames[position])
+                    .position(markerLatLng)
+                    .snippet(markerSnippet));
 
-                // Position the map's camera at the location of the marker.
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(markerLatLng));
-            }
+            // Position the map's camera at the location of the marker.
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(markerLatLng));
         }
     };
 

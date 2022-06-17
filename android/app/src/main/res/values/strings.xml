@@ -3,4 +3,9 @@
     <string name="temp_images_dir">temp_images</string>
     <string name="temp_image">temp_image.jpg</string>
     <string name="authorities">pt.ulisboa.tecnico.cmov.conversationalist.fileprovider</string>
+    <string name="preference_file_key">pt.ulisboa.tecnico.cmov.conversationalist.PREFERENCE_FILE_KEY</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="action_geolocate">Pick Place</string>
+    <string name="default_info_title">Default Location</string>
+    <string name="default_info_snippet">No places found, because location permission is disabled.</string>
 </resources>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -44,9 +42,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public ImageMessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.author = (TextView) itemView.findViewById(R.id.imageAuthorId);
+            this.author = (TextView) itemView.findViewById(R.id.locationAuthorId);
             this.image = (ImageView) itemView.findViewById(R.id.imageId);
-            this.time = (TextView) itemView.findViewById(R.id.imageTimeId);
+            this.time = (TextView) itemView.findViewById(R.id.locationTimeId);
         }
     }
 

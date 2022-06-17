@@ -8,13 +8,13 @@
     tools:context=".PublicChatroomActivity">
 
     <TextView
-        android:id="@+id/publicChatIdTextView"
+        android:id="@+id/privateChatIdTextView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="Lore Ipsum" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatRecyclerView"
+        android:id="@+id/privateChatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="50dp">
@@ -30,7 +30,7 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/publicChatTextId"
+            android:id="@+id/privateChatTextId"
             android:layout_width="300dp"
             android:layout_height="match_parent"
             android:layout_weight="0"
@@ -39,7 +39,7 @@
             android:textColorHint="#757575" />
 
         <ImageButton
-            android:id="@+id/publicUploadPictureId"
+            android:id="@+id/privateUploadPictureId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
@@ -47,7 +47,7 @@
             app:srcCompat="@android:drawable/ic_menu_gallery" />
 
         <ImageButton
-            android:id="@+id/publicUploadLocationId"
+            android:id="@+id/privateUploadLocationId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"

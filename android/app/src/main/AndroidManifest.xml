@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="pt.ulisboa.tecnico.cmov.conversationalist">
-
-    <uses-feature
-        android:name="android.hardware.camera"
+    <uses-feature android:name="android.hardware.camera"
         android:required="true" />
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -33,6 +31,15 @@
             android:name=".MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
+
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".UpdateListenerService"
+            android:enabled="true"
+            android:exported="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -66,10 +73,10 @@
             android:name=".JoinChatroomActivity"
             android:exported="false" />
         <activity
-            android:name=".createchatroom.CreateChatroomActivity"
+            android:name=".CreateChatroomActivity"
             android:exported="false" />
         <activity
-            android:name=".chatrooms.ChatroomsActivity"
+            android:name=".ChatroomsActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

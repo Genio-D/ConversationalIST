@@ -1,43 +1,43 @@
-package pt.ulisboa.tecnico.cmov.conversationalist.chatrooms;
+package pt.ulisboa.tecnico.cmov.conversationalist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
-import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.conversationalist.createchatroom.CreateChatroomActivity;
-import pt.ulisboa.tecnico.cmov.conversationalist.JoinChatroomActivity;
-import pt.ulisboa.tecnico.cmov.conversationalist.R;
-import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 
 public class ChatroomsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("ChatroomsActivity", "Here");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatrooms);
+    }
 
-        var model = new ViewModelProvider(this).get(ChatroomsViewModel.class);
-        var chatrooms = model.getJoinedChatrooms().getValue();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        var chatrooms = new ArrayList<>(Data.getJoinedChatrooms().getChatrooms().keySet());
         var adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chatrooms);
         ListView chatroomsListView = findViewById(R.id.chatroomsListView);
+        chatroomsListView.setOnItemClickListener((parent, view, position, id) -> {
+            var chatId = chatrooms.get(position);
+            var intent = new Intent(this, PublicChatroomActivity.class);
+            intent.putExtra("chatId", chatId);
+            startActivity(intent);
+        });
         chatroomsListView.setAdapter(adapter);
-
-        var observer = new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> s) {
-                adapter.notifyDataSetChanged();
-            }
-        };
-        model.getJoinedChatrooms().observe(this, observer);
     }
 
     public void onCreateChatroom(View view) {

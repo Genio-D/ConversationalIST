@@ -2,7 +2,11 @@ package pt.ulisboa.tecnico.cmov.conversationalist.data.backend;
 
 import com.squareup.moshi.Moshi;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +18,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.AddUser;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.CreateGeoChatroom;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.CreatePublicChatroom;
@@ -25,28 +30,9 @@ import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.PublicCh
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.Response;
 
 public class BackendManager {
-    private static final ExecutorService executorService = Executors.newCachedThreadPool();
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private static final String url = "http://10.0.2.2:5000";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-    /**
-    public static void listen() {
-        Log.d("Backend", "Opening Socket");
-        executorService.submit(() -> {
-            try {
-                var socket = new Socket("10.0.2.2", 5001);
-                Log.d("Backend", "connected");
-                var printWriter = new PrintWriter(socket.getOutputStream());
-                printWriter.println("hello");
-                printWriter.flush();
-                Log.d("Backend", "Sent message");
-                var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                Log.d("Backend", "Read message: " + reader.readLine());
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        });
-    }*/
 
     private static <T> T sendRequest(Request request, Class<T> responseClass) throws IOException {
         var moshi = new Moshi.Builder().build();
@@ -76,14 +62,14 @@ public class BackendManager {
         }
     }
 
-    private static <T extends Response> void post(String path, String json, Class<T> responseClass) {
+    private static void post(String path, String json) {
         var body = RequestBody.create(json, JSON);
         var request = new Request.Builder()
                 .url(url + path)
                 .post(body)
                 .addHeader("Accept", "application/json; q=0.5")
                 .build();
-        var response = submitTask(() -> sendRequest(request, responseClass));
+        var response = submitTask(() -> sendRequest(request, Response.class));
         if (response.isError()) {
             throw new RuntimeException(response.getErrorMessage());
         }
@@ -97,17 +83,17 @@ public class BackendManager {
 
     public static void addUser(String username) {
         var request = createRequest(new AddUser(username), AddUser.class);
-        post("/addUser", request, Response.class);
+        post("/addUser", request);
     }
 
     public static void postMessage(String username, String chatId, String messageType, String content) {
         var request = createRequest(new PostMessage(username, chatId, messageType, content), PostMessage.class);
-        post("/postMessage", request, Response.class);
+        post("/postMessage", request);
     }
 
     public static void createPublicChatroom(String username, String chatId) {
         var request = createRequest(new CreatePublicChatroom(username, chatId), CreatePublicChatroom.class);
-        post("/createPublicChatroom", request, Response.class);
+        post("/createPublicChatroom", request);
     }
 
     public static void createGeoChatroom(String username,
@@ -116,7 +102,7 @@ public class BackendManager {
                                          double longitude,
                                          double radius) {
         var request = createRequest(new CreateGeoChatroom(username, chatId, latitude, longitude, radius), CreateGeoChatroom.class);
-        post("/createGeoChatroom", request, Response.class);
+        post("/createGeoChatroom", request);
     }
 
     public static PublicChatrooms getPublicChatrooms() {
@@ -127,12 +113,12 @@ public class BackendManager {
         return get("/getJoinedChatrooms/" + username, JoinedChatrooms.class);
     }
 
-    public static Message getMessage(String chatId, int messageNumber) {
-        return get("/chatrooms/" + chatId + "/" + messageNumber, Message.class);
+    public static Message getMessage(String path) {
+        return get( "/chatrooms/" + path, Message.class);
     }
 
     public static void joinRoom(String username, String chatId) {
         var request = createRequest(new JoinRoom(chatId, username), JoinRoom.class);
-        post("/joinRoom", request, Response.class);
+        post("/joinRoom", request);
     }
 }

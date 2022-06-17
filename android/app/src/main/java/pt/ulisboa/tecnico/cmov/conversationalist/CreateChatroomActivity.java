@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.conversationalist.createchatroom;
+package pt.ulisboa.tecnico.cmov.conversationalist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.conversationalist.R;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 
 public class CreateChatroomActivity extends AppCompatActivity {
@@ -29,7 +30,18 @@ public class CreateChatroomActivity extends AppCompatActivity {
 
     public void onCreateChatroom(View view) {
         EditText createChatroomEditText = findViewById(R.id.chatroomIdEditText);
+        var chatId = createChatroomEditText.getText().toString();
         Spinner spinner = findViewById(R.id.optionsSpinner);
-        //int pos = spinner.getSelectedItemPosition();
+        int pos = spinner.getSelectedItemPosition();
+        switch (pos) {
+            case 0:
+                BackendManager.createPublicChatroom(Data.getUsername(), chatId);
+                break;
+            case 1:
+                break;
+            case 2:
+                BackendManager.createGeoChatroom(Data.getUsername(), chatId, 1.5, 1.5, 1.5);
+        }
+        finish();
     }
 }

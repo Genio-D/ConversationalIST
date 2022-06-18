@@ -1,7 +1,7 @@
 from Message import Message
 from Chatroom import Chatroom
 
-class PublicChatroom(Chatroom):
+class PrivateChatroom(Chatroom):
 
     def getType(self):
-        return "public"
+        return "private"

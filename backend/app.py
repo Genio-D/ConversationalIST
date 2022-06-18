@@ -10,6 +10,8 @@ app = Flask(__name__)
 serverManager = ServerManager("Hi")
 clientSockets = {}
 
+serverManager.addUser("user1")
+
 #TODO: Error handling? JSON validation?
 
 def startServerSocket():
@@ -158,7 +160,18 @@ def getPublicChatrooms():
 EXAMPLE REQUEST
 {}
 EXAMPLE RESPONSE
-{"chatrooms": {"1": 54, "2": 86}}
+{
+	"chatrooms": [{
+		"chatId": "tagus",
+		"type": "public",
+		"messages": 54
+	}, {
+		"chatId": "park",
+		"type": "private",
+		"messages": 99
+	}]
+}
+
 """
 @app.route("/getJoinedChatrooms/<username>", methods=["GET"])
 def getJoinedChatrooms(username):

@@ -101,7 +101,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        var count = Data.getJoinedChatrooms().getChatrooms().get(chatId);
-        return Objects.requireNonNullElse(count, 0);
+        for(var chatroom : Data.getJoinedChatrooms().getChatrooms()) {
+            if(chatroom.getChatId().equals(chatId))
+                return chatroom.getMessages();
+        }
+        return 0;
     }
 }

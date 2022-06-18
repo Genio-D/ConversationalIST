@@ -6,6 +6,9 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.Chatroom;
 
 public class BackendManagerTest {
     // CHANGE ADDRESS BEFORE TESTING
@@ -40,8 +43,12 @@ public class BackendManagerTest {
         var publicChatrooms = List.of(publicChatId);
         assertEquals(publicChatrooms, BackendManager.getPublicChatrooms().getList());
 
-        var joinedChatrooms = Set.of(publicChatId, geoChatId);
-        assertEquals(joinedChatrooms, BackendManager.getJoinedChatrooms(username).getChatrooms().keySet());
+        var joinedChatrooms = List.of(publicChatId, geoChatId);
+        assertEquals(joinedChatrooms, BackendManager.getJoinedChatrooms(username)
+                .getChatrooms()
+                .stream()
+                .map(Chatroom::getChatId)
+                .collect(Collectors.toList()));
 
         var messageType = "text";
         var content = "hello";

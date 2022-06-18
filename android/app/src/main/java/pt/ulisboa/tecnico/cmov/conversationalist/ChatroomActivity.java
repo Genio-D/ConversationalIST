@@ -38,7 +38,7 @@ import java.io.IOException;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 
-public class PublicChatroomActivity extends AppCompatActivity {
+public class ChatroomActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ChatAdapter adapter;
@@ -48,9 +48,9 @@ public class PublicChatroomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.chatId = getIntent().getStringExtra("chatId");
-        setContentView(R.layout.activity_public_chatroom);
-        ((TextView) findViewById(R.id.publicChatIdTextView)).setText(chatId);
+        this.chatId = Data.getChatId();
+        setContentView(R.layout.activity_chatroom);
+        ((TextView) findViewById(R.id.chatIdTextView)).setText(chatId);
         /*create temporary file to store camera photos*/
         Uri tempImagePath = initTempUri();
         registerTakePictureLauncher(tempImagePath);
@@ -64,22 +64,30 @@ public class PublicChatroomActivity extends AppCompatActivity {
         String apiKey = applicationInfo.metaData.getString("com.google.android.geo.API_KEY");
         Places.initialize(getApplicationContext(), apiKey);
         PlacesClient placesClient = Places.createClient(this);
-        ImageButton geoBtn = (ImageButton) findViewById(R.id.publicUploadLocationId);
+        ImageButton geoBtn = (ImageButton) findViewById(R.id.uploadLocationId);
         geoBtn.setOnClickListener(v -> {
             Intent localizationIntent = new Intent(this, MapsActivity.class);
             localizationIntent.putExtra("getLocation", true);
             startActivityForResult(localizationIntent, LOCATION_REQUEST_CODE);
         });
 
-        recyclerView = (RecyclerView) findViewById(R.id.publicChatRecyclerView);
+        ImageButton shareBtn = (ImageButton) findViewById(R.id.shareButton);
+        shareBtn.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "Yo, make sure to join http://conversationalist.pt/chatId/" + chatId);
+            startActivity(shareIntent);
+        });
+
+        recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
 
         this.adapter = new ChatAdapter(chatId);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.publicChatRecyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        EditText editText = findViewById(R.id.publicChatTextId);
+        EditText editText = findViewById(R.id.chatTextId);
         editText.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN) {
                 if(keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -103,7 +111,7 @@ public class PublicChatroomActivity extends AppCompatActivity {
     }
 
     private void registerTakePictureLauncher(Uri tempImagePath) {
-        ImageButton imgBtn = (ImageButton) findViewById(R.id.publicUploadPictureId);
+        ImageButton imgBtn = (ImageButton) findViewById(R.id.uploadPictureId);
         ActivityResultLauncher<Uri> resultLauncher = registerForActivityResult(new ActivityResultContracts.TakePicture(),
                 new ActivityResultCallback<Boolean>() {
                     @Override

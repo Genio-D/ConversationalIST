@@ -7,3 +7,6 @@ class GeoChatroom(Chatroom):
         self.latitude = latitude
         self.longitude = longitude
         self.radius = radius
+
+    def getType(self):
+        return "geo"

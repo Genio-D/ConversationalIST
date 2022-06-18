@@ -52,14 +52,21 @@
         </provider>
 
         <activity
-            android:name=".PublicChatroomActivity"
+            android:name=".ChatroomActivity"
             android:exported="false" />
         <activity
-            android:name=".PrivateChatroomActivity"
+            android:name=".JoinChatroomActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreateChatroomActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ListChatroomsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -70,23 +77,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".JoinChatroomActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CreateChatroomActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ChatroomsActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false"/>
     </application>
 
 </manifest>

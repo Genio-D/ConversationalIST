@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_geolocate">Escolhe um sítio</string>
+    <string name="default_info_title">Localização pré-definida</string>
+    <string name="default_info_snippet">Nenhum lugar encontrado, porque a permissão de localização está desativada.</string>
+    <string name="chat_message_hint">Escreva a sua mensagem aqui</string>
+    <string name="create_new_chatroom">Criar nova sala</string>
+    <string name="join_new_chatroom">Juntar a uma sala</string>
+    <string name="joined_chatrooms">Salas juntadas</string>
+    <string name="enter_chatroom_name">Escreva o nome da sala</string>
+    <string name="create_chatroom">Criar sala</string>
+    <string name="available_chatrooms">Salas disponíveis</string>
+    <string name="enter_username">Insira o nome de utilizador</string>
+    <string name="register">Registar</string>
+    <string name="log_in">Iniciar sessão</string>
+</resources>

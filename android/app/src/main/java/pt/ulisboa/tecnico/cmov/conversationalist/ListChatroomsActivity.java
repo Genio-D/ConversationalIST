@@ -33,11 +33,47 @@ public class ListChatroomsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivityForResult(intent, LOGIN_REQUEST_CODE);
         }
+        else {
+            initialize();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        try {
+            var chatrooms = new ArrayList<>(Data.getJoinedChatrooms().getChatIds());
+            var adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chatrooms);
+            ListView chatroomsListView = findViewById(R.id.chatroomsListView);
+            chatroomsListView.setOnItemClickListener((parent, view, position, id) -> {
+                var chatId = chatrooms.get(position);
+                Data.setChatId(chatId);
+                var intent = new Intent(this, ChatroomActivity.class);
+                startActivity(intent);
+            });
+            chatroomsListView.setAdapter(adapter);
+        } catch(Exception e) {
+            Log.i("mytag", "no username defined yet probably");
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == LOGIN_REQUEST_CODE) {
+            if(resultCode != Activity.RESULT_OK) {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivityForResult(intent, LOGIN_REQUEST_CODE);
+            }
+            else {
+                initialize();
+            }
+        }
+    }
+
+    private void initialize() {
         SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String username = sharedPrefs.getString("username", "NOUSERNAMEBRO");
         Log.i("mytag", "username on shared preferences is " + username);
@@ -46,7 +82,6 @@ public class ListChatroomsActivity extends AppCompatActivity {
         Intent previousIntent = getIntent();
         String appLinkAction = previousIntent.getAction();
         Uri appLinkData = previousIntent.getData();
-        var chatrooms = new ArrayList<>(Data.getJoinedChatrooms().getChatIds());
         if(Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null) {
             /*user clicked on an app link*/
             String chatIdToJoin = appLinkData.getLastPathSegment();
@@ -68,26 +103,6 @@ public class ListChatroomsActivity extends AppCompatActivity {
                     break;
                 default:
                     throw new RuntimeException("there is not type " + type);
-            }
-        }
-        var adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chatrooms);
-        ListView chatroomsListView = findViewById(R.id.chatroomsListView);
-        chatroomsListView.setOnItemClickListener((parent, view, position, id) -> {
-            var chatId = chatrooms.get(position);
-            Data.setChatId(chatId);
-            var intent = new Intent(this, ChatroomActivity.class);
-            startActivity(intent);
-        });
-        chatroomsListView.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOGIN_REQUEST_CODE) {
-            if(resultCode != Activity.RESULT_OK) {
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivityForResult(intent, LOGIN_REQUEST_CODE);
             }
         }
     }

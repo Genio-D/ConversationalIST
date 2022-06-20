@@ -25,7 +25,7 @@
         android:layout_marginTop="19dp"
         android:layout_marginEnd="63dp"
         android:onClick="onCreateChatroom"
-        android:text="Create a new chatroom"
+        android:text="@string/create_new_chatroom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chatroomsListView" />
@@ -38,7 +38,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="63dp"
         android:onClick="onJoinChatroom"
-        android:text="Join a new chatroom"
+        android:text="@string/join_new_chatroom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
         android:layout_marginStart="148dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="148dp"
-        android:text="Joined Chatrooms"
+        android:text="@string/joined_chatrooms"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -48,7 +48,7 @@
             android:layout_width="300dp"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:hint="Write your message here"
+            android:hint="@string/chat_message_hint"
             android:inputType="textPersonName"
             android:textColorHint="#757575" />
 

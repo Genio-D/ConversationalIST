@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/layout/activity_chatroom.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_chatrooms.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_create_chatroom.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_join_chatroom.xml" value="0.35625" />

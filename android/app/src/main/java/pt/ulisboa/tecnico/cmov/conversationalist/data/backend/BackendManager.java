@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.conversationalist.data.backend;
 
+import android.util.Log;
+
 import com.squareup.moshi.Moshi;
 
 import java.io.BufferedReader;
@@ -31,8 +33,8 @@ import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.Response
 
 public class BackendManager {
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    //private static final String url = "http://10.0.2.2:5000";
-    private static final String url = "http://127.0.0.1:5000";
+    private static final String url = "https://10.0.2.2:5000";
+    //private static final String url = "http://127.0.0.1:5000";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private static <T> T sendRequest(Request request, Class<T> responseClass) throws IOException {

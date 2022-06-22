@@ -13,11 +13,13 @@
     <string name="join_new_chatroom">Join a new chatroom</string>
     <string name="joined_chatrooms">Joined Chatrooms</string>
     <string name="enter_chatroom_name">Enter chatroom name</string>
+    <string name="enter_password">Enter password</string>
     <string name="create_chatroom">Create chatroom</string>
     <string name="available_chatrooms">Available Chatrooms</string>
     <string name="enter_username">Enter username</string>
     <string name="register">register</string>
     <string name="log_in">Log In</string>
+    <string name="log_out">Log Out</string>
     <string name="pick_location">Pick Location</string>
     <string name="radius">Radius (m)</string>
 </resources>

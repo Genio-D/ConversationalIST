@@ -16,12 +16,20 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 
 public class NotificationService extends Service {
     private static int notificationId = 0;
+    private static BroadcastReceiver br;
+
+    public void unregisterBr() {
+        if (br != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(br);
+        }
+    }
 
     public NotificationService() {
     }
@@ -54,7 +62,8 @@ public class NotificationService extends Service {
     }
 
     public void awaitNewMessage() {
-        var br = new BroadcastReceiver() {
+        unregisterBr();
+        br = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 var path = intent.getStringExtra("path");
@@ -62,7 +71,7 @@ public class NotificationService extends Service {
                 var clickIntent = new Intent(context, ChatroomActivity.class);
                 var chatId = Data.getChatIdFromPath(path);
                 clickIntent.putExtra("chatId", chatId);
-                Log.i("mytag", "Notification: " + chatId);
+                Log.d("data update", "Notification: " + chatId);
 //                clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                 var builder= new NotificationCompat.Builder(context, "notifications")
@@ -78,6 +87,7 @@ public class NotificationService extends Service {
                 notificationManager.notify(notificationId, builder.build());
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver(br, new IntentFilter("data update"));
+        var intentFilter = new IntentFilter("data update");
+        LocalBroadcastManager.getInstance(this).registerReceiver(br, intentFilter);
     }
 }

@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,7 @@ public class ListChatroomsActivity extends AppCompatActivity {
         SharedPreferences sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         if (!sharedPrefs.contains("username")) {
             Log.i("mytag", "username not in shared preferences, starting login");
-            Intent intent = new Intent(this, MainActivity.class);
+            var intent = new Intent(this, MainActivity.class);
             startActivityForResult(intent, LOGIN_REQUEST_CODE);
         }
         else {
@@ -79,6 +80,7 @@ public class ListChatroomsActivity extends AppCompatActivity {
         Log.i("mytag", "username on shared preferences is " + username);
         Data.setUsername(username);
         startService(new Intent(this, UpdateListenerService.class));
+        Log.i("mytag", "listening to new messages");
         startService(new Intent(this, NotificationService.class));
         Intent previousIntent = getIntent();
         String appLinkAction = previousIntent.getAction();
@@ -104,5 +106,11 @@ public class ListChatroomsActivity extends AppCompatActivity {
     public void onJoinChatroom(View view) {
         var intent = new Intent(this, JoinChatroomActivity.class);
         startActivity(intent);
+    }
+
+    public void onLogOut(View view) {
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("logout"));
+        var intent = new Intent(this, MainActivity.class);
+        startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 }

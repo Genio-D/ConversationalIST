@@ -160,6 +160,20 @@ def getPublicChatrooms():
 EXAMPLE REQUEST
 {}
 EXAMPLE RESPONSE
+{"list": ["1","2"]}
+"""
+@app.route("/getGeoChatrooms", methods=["GET"])
+def getGeoChatrooms():
+    print("GET /getGeoChatrooms")
+    idList = serverManager.getGeoChatrooms()
+    print(makeOkResponse({'list' : idList}))
+    return makeOkResponse({'list' : idList})
+
+
+"""
+EXAMPLE REQUEST
+{}
+EXAMPLE RESPONSE
 {
 	"chatrooms": [{
 		"chatId": "tagus",

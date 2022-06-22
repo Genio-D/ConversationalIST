@@ -58,6 +58,9 @@ class ServerManager:
     def getPublicChatrooms(self):
         return [chat.id for chat in self.chatrooms if type(chat) is PublicChatroom]
 
+    def getGeoChatrooms(self):
+        return [chat.__dict__ for chat in self.chatrooms if type(chat) is GeoChatroom]
+
     def getJoinedChatrooms(self, username):
         user = self.findUser(username)
         chatrooms = user.joinedChatrooms

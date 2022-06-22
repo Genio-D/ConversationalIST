@@ -4,7 +4,7 @@ class Chatroom:
     def __init__(self, id):
         self.id = id
         self.messages = []
-        self.members = []
+        self.members = set()
 
     def getMessages(self):
         return self.messages
@@ -13,7 +13,7 @@ class Chatroom:
         self.messages.append(message)
 
     def addMember(self, user):
-        self.members.append(user)
+        self.members.add(user)
 
     def removeMember(self, user):
         self.members.remove(user)

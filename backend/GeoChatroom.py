@@ -10,3 +10,13 @@ class GeoChatroom(Chatroom):
 
     def getType(self):
         return "geo"
+        
+    def toDict(self):
+        return {
+            "chatId": self.id,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "radius": self.radius,
+            "messages": len(self.messages),
+            "type": self.getType()
+        }

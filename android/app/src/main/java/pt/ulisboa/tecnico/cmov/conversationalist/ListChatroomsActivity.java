@@ -89,6 +89,7 @@ public class ListChatroomsActivity extends AppCompatActivity {
             Log.i("mytag", "this guy wants to join " + chatIdToJoin);
             BackendManager.joinRoom(Data.getUsername(), chatIdToJoin);
             Data.updateJoinedChatrooms();
+
             var intent = new Intent(this, ChatroomActivity.class);
             intent.putExtra("chatId", chatIdToJoin);
             startActivity(intent);

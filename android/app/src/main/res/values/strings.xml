@@ -18,4 +18,6 @@
     <string name="enter_username">Enter username</string>
     <string name="register">register</string>
     <string name="log_in">Log In</string>
+    <string name="pick_location">Pick Location</string>
+    <string name="radius">Radius (m)</string>
 </resources>

@@ -290,14 +290,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
+                            Log.i("mytag", "is this task really successful though? wtf man");
                             mLastKnownLocation = task.getResult();
-                            Log.d(TAG, "Latitude: " + mLastKnownLocation.getLatitude());
-                            Log.d(TAG, "Longitude: " + mLastKnownLocation.getLongitude());
-                            LatLng lastKnown = new LatLng(mLastKnownLocation.getLatitude(),
-                                    mLastKnownLocation.getLongitude());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    lastKnown, DEFAULT_ZOOM));
-                            // mMap.addMarker(new MarkerOptions().position(lastKnown).title("Current Location"));
+                            if(mLastKnownLocation == null)
+                                Log.i("mytag", "told ya man, shit's null");
+                            else {
+                                Log.d(TAG, "Latitude: " + mLastKnownLocation.getLatitude());
+                                Log.d(TAG, "Longitude: " + mLastKnownLocation.getLongitude());
+                                LatLng lastKnown = new LatLng(mLastKnownLocation.getLatitude(),
+                                        mLastKnownLocation.getLongitude());
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        lastKnown, DEFAULT_ZOOM));
+                                // mMap.addMarker(new MarkerOptions().position(lastKnown).title("Current Location"));
+                            }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());

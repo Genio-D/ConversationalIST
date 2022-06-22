@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -63,31 +64,44 @@ public class CreateChatroomActivity extends AppCompatActivity {
         });
     }
 
+    private static boolean validChatId(String chatId) {
+        return Data.onlyAlphanum(chatId);
+    }
+
     public void onCreateChatroom(View view) {
         EditText createChatroomEditText = findViewById(R.id.chatroomIdEditText);
         var chatId = createChatroomEditText.getText().toString();
-        Spinner spinner = findViewById(R.id.optionsSpinner);
-        int pos = spinner.getSelectedItemPosition();
-        switch (pos) {
-            case 0:
-                BackendManager.createPublicChatroom(Data.getUsername(), chatId);
-                Data.updateJoinedChatrooms();
-                finish();
-                break;
-            case 1:
-                break;
-            case 2:
-                String locationInfo = ((TextView) findViewById(R.id.showCoords)).getText().toString();
-                String radius = ((EditText) findViewById(R.id.pickRadius)).getText().toString();
-                if(!Objects.equals(radius, "") && !locationInfo.equals("")) {
-                    String[] latLong = locationInfo.split(",");
-                    double lat = Double.parseDouble(latLong[0]);
-                    double lng = Double.parseDouble(latLong[1]);
-                    double rad = Double.parseDouble(radius);
-                    BackendManager.createGeoChatroom(Data.getUsername(), chatId, lat, lng, rad);
-                    Data.updateJoinedChatrooms();
-                    finish();
+        try {
+            if (validChatId(chatId)) {
+                Spinner spinner = findViewById(R.id.optionsSpinner);
+                int pos = spinner.getSelectedItemPosition();
+                switch (pos) {
+                    case 0:
+                        BackendManager.createPublicChatroom(Data.getUsername(), chatId);
+                        Data.updateJoinedChatrooms();
+                        finish();
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        String locationInfo = ((TextView) findViewById(R.id.showCoords)).getText().toString();
+                        String radius = ((EditText) findViewById(R.id.pickRadius)).getText().toString();
+                        if(!Objects.equals(radius, "") && !locationInfo.equals("")) {
+                            String[] latLong = locationInfo.split(",");
+                            double lat = Double.parseDouble(latLong[0]);
+                            double lng = Double.parseDouble(latLong[1]);
+                            double rad = Double.parseDouble(radius);
+                            BackendManager.createGeoChatroom(Data.getUsername(), chatId, lat, lng, rad);
+                            Data.updateJoinedChatrooms();
+                            finish();
+                        }
                 }
+            } else {
+                throw new RuntimeException("invalid chat id");
+            }
+        } catch (RuntimeException e) {
+            var toast = Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 

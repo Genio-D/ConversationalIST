@@ -27,6 +27,7 @@ import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -90,12 +91,18 @@ public class ChatroomActivity extends AppCompatActivity {
 
         EditText editText = findViewById(R.id.chatTextId);
         editText.setOnKeyListener((v, keyCode, event) -> {
-            if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                if(keyCode == KeyEvent.KEYCODE_ENTER) {
-                    BackendManager.postMessage(Data.getUsername(), chatId, "text", editText.getText().toString());
+            try {
+                if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if(keyCode == KeyEvent.KEYCODE_ENTER) {
+                        BackendManager.postMessage(Data.getUsername(), chatId, "text", editText.getText().toString());
+                    }
                 }
+                return false;
+            } catch (RuntimeException e) {
+                var toast = Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT);
+                toast.show();
+                return false;
             }
-            return false;
         });
 
         var br = new BroadcastReceiver() {
@@ -103,7 +110,7 @@ public class ChatroomActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 var path = intent.getStringExtra("path");
                 Log.d("Broadcast receiver", "new message: " + path);
-                adapter.notifyItemInserted(adapter.getItemCount() - 1);
+                adapter.notifyItemInserted(adapter.getItemCount());
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(br, new IntentFilter("data update"));

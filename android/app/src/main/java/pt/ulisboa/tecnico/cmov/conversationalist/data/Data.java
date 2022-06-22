@@ -4,6 +4,7 @@ import android.database.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.Chatroom;
@@ -61,5 +62,11 @@ public class Data {
 
     public static String getChatIdFromPath(String path) {
         return path.split("/")[0];
+    }
+
+    public static boolean onlyAlphanum(String s) {
+        var p = Pattern.compile("[a-zA-Z0-9]+");
+        var m = p.matcher(s);
+        return m.matches();
     }
 }

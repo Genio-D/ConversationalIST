@@ -87,10 +87,12 @@ public class CreateChatroomActivity extends AppCompatActivity {
                         String locationInfo = ((TextView) findViewById(R.id.showCoords)).getText().toString();
                         String radius = ((EditText) findViewById(R.id.pickRadius)).getText().toString();
                         if(!Objects.equals(radius, "") && !locationInfo.equals("")) {
+                            Log.i("mytag", "location info is " + locationInfo);
                             String[] latLong = locationInfo.split(",");
                             double lat = Double.parseDouble(latLong[0]);
                             double lng = Double.parseDouble(latLong[1]);
                             double rad = Double.parseDouble(radius);
+                            Log.i("mytag", "lat=" + lat + "lng=" + lng + "rad=" + rad);
                             BackendManager.createGeoChatroom(Data.getUsername(), chatId, lat, lng, rad);
                             Data.updateJoinedChatrooms();
                             finish();

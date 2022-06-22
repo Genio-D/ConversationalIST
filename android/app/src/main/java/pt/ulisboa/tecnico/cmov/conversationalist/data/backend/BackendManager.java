@@ -26,6 +26,7 @@ import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.CreateGeo
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.CreatePublicChatroom;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.JoinRoom;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.PostMessage;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.GeoChatrooms;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.JoinedChatrooms;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.Message;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.PublicChatrooms;
@@ -110,6 +111,10 @@ public class BackendManager {
 
     public static PublicChatrooms getPublicChatrooms() {
         return get("/getPublicChatrooms", PublicChatrooms.class);
+    }
+
+    public static GeoChatrooms getGeoChatrooms() {
+        return get("/getGeoChatrooms", GeoChatrooms.class);
     }
 
     public static JoinedChatrooms getJoinedChatrooms(String username) {

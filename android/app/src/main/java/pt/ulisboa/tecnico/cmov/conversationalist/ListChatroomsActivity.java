@@ -102,7 +102,7 @@ public class ListChatroomsActivity extends AppCompatActivity {
                     Log.i("mytag", "SYKE, that's the wrong TYPE gottem");
                     break;
                 default:
-                    throw new RuntimeException("there is not type " + type);
+                    throw new RuntimeException("there is no type " + type);
             }
         }
     }

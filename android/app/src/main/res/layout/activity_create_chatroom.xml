@@ -35,30 +35,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chatroomIdEditText" />
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="342dp"
-        android:layout_height="385dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="41dp"
-        android:layout_marginEnd="37dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/optionsSpinner" />
-
     <Button
         android:id="@+id/createChatroomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="95dp"
-        android:layout_marginTop="22dp"
         android:layout_marginEnd="95dp"
         android:layout_marginBottom="37dp"
         android:onClick="onCreateChatroom"
         android:text="@string/create_chatroom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/pickLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="131dp"
+        android:layout_marginTop="109dp"
+        android:layout_marginEnd="131dp"
+        android:text="@string/pick_location"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
+        app:layout_constraintTop_toBottomOf="@+id/optionsSpinner" />
+
+    <TextView
+        android:id="@+id/showCoords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="33dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/pickLocationButton"
+        tools:layout_editor_absoluteX="231dp" />
+
+    <EditText
+        android:id="@+id/pickRadius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="59dp"
+        android:layout_marginEnd="105dp"
+        android:ems="10"
+        android:hint="@string/radius"
+        android:inputType="numberDecimal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pickLocationButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

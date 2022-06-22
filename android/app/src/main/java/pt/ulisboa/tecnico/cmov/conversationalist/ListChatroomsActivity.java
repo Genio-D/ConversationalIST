@@ -47,8 +47,8 @@ public class ListChatroomsActivity extends AppCompatActivity {
             ListView chatroomsListView = findViewById(R.id.chatroomsListView);
             chatroomsListView.setOnItemClickListener((parent, view, position, id) -> {
                 var chatId = chatrooms.get(position);
-                Data.setChatId(chatId);
                 var intent = new Intent(this, ChatroomActivity.class);
+                intent.putExtra("chatId", chatId);
                 startActivity(intent);
             });
             chatroomsListView.setAdapter(adapter);
@@ -79,6 +79,7 @@ public class ListChatroomsActivity extends AppCompatActivity {
         Log.i("mytag", "username on shared preferences is " + username);
         Data.setUsername(username);
         startService(new Intent(this, UpdateListenerService.class));
+        startService(new Intent(this, NotificationService.class));
         Intent previousIntent = getIntent();
         String appLinkAction = previousIntent.getAction();
         Uri appLinkData = previousIntent.getData();
@@ -88,22 +89,9 @@ public class ListChatroomsActivity extends AppCompatActivity {
             Log.i("mytag", "this guy wants to join " + chatIdToJoin);
             BackendManager.joinRoom(Data.getUsername(), chatIdToJoin);
             Data.updateJoinedChatrooms();
-            String type = Data.getChatroom(chatIdToJoin).getType();
-            Data.setChatId(chatIdToJoin);
-            switch(type) {
-                case "public":
-                    startActivity(new Intent(this, ChatroomActivity.class));
-                    break;
-                case "private":
-                    startActivity(new Intent(this, ChatroomActivity.class));
-                    break;
-                case "geo":
-
-                    Log.i("mytag", "SYKE, that's the wrong TYPE gottem");
-                    break;
-                default:
-                    throw new RuntimeException("there is not type " + type);
-            }
+            var intent = new Intent(this, ChatroomActivity.class);
+            intent.putExtra("chatId", chatIdToJoin);
+            startActivity(intent);
         }
     }
 

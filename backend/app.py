@@ -34,7 +34,7 @@ def handleClient(client):
     username = data.decode('utf-8').strip()
     print("created socket for user: " + username)
     clientSockets[username] = client
-    client.sendall(str.encode("gotcha, thanks " + username + "\n"))
+#    client.sendall(str.encode("gotcha, thanks " + username + "\n"))
 
 def notifyClients(memberList, chatId, messageNumber):
     try:

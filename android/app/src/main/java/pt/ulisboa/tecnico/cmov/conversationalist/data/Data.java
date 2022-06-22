@@ -14,8 +14,6 @@ public class Data {
     private static String username;
     private static JoinedChatrooms joinedChatrooms;
     private static MessageCache messageCache;
-    private static Observable<Boolean> received;
-    private static String chatId;
 
     public synchronized static String getUsername() {
         if (username == null) {
@@ -61,11 +59,7 @@ public class Data {
         throw new RuntimeException("chatId not in joined chatrooms");
     }
 
-    public synchronized static String getChatId() {
-        return chatId;
-    }
-
-    public synchronized static void setChatId(String chatId) {
-        Data.chatId = chatId;
+    public static String getChatIdFromPath(String path) {
+        return path.split("/")[0];
     }
 }

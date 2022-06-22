@@ -41,14 +41,15 @@ import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 public class ChatroomActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    ChatAdapter adapter;
+
     private final static int LOCATION_REQUEST_CODE = 1001;
     private String chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.chatId = Data.getChatId();
+        this.chatId = getIntent().getStringExtra("chatId");
+        Log.i("mytag", "Chatroom:" + chatId);
         setContentView(R.layout.activity_chatroom);
         ((TextView) findViewById(R.id.chatIdTextView)).setText(chatId);
         /*create temporary file to store camera photos*/
@@ -81,7 +82,7 @@ public class ChatroomActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
 
-        this.adapter = new ChatAdapter(chatId);
+        var adapter = new ChatAdapter(chatId);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -102,12 +103,10 @@ public class ChatroomActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 var path = intent.getStringExtra("path");
                 Log.d("Broadcast receiver", "new message: " + path);
-                Data.getMessageCache().getMessage(path);
-                Data.updateJoinedChatrooms();
                 adapter.notifyItemInserted(adapter.getItemCount() - 1);
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver(br, new IntentFilter("new message"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(br, new IntentFilter("data update"));
     }
 
     private void registerTakePictureLauncher(Uri tempImagePath) {

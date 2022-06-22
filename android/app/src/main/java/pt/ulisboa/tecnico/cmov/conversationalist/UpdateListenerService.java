@@ -42,7 +42,9 @@ public class UpdateListenerService extends Service {
                 var line = reader.readLine();
                 if (line != null) {
                     Log.d("UpdateListener", line);
-                    var intent = new Intent("new message");
+                    Data.getMessageCache().getMessage(line);
+                    Data.updateJoinedChatrooms();
+                    var intent = new Intent("data update");
                     intent.putExtra("path", line);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 }

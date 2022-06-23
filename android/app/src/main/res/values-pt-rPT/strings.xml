@@ -13,4 +13,6 @@
     <string name="enter_username">Insira o nome de utilizador</string>
     <string name="register">Registar</string>
     <string name="log_in">Iniciar sessão</string>
+    <string name="pick_location">Escolher localização</string>
+    <string name="radius">Raio (m)</string>
 </resources>

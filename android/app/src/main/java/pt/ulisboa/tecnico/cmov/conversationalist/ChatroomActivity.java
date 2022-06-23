@@ -42,7 +42,7 @@ import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 public class ChatroomActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-
+    ChatAdapter adapter;
     private final static int LOCATION_REQUEST_CODE = 1001;
     private String chatId;
 
@@ -83,7 +83,7 @@ public class ChatroomActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
 
-        var adapter = new ChatAdapter(chatId);
+        adapter = new ChatAdapter(chatId);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -95,6 +95,8 @@ public class ChatroomActivity extends AppCompatActivity {
                 if(event.getAction() == KeyEvent.ACTION_DOWN) {
                     if(keyCode == KeyEvent.KEYCODE_ENTER) {
                         BackendManager.postMessage(Data.getUsername(), chatId, "text", editText.getText().toString());
+                        editText.getText().clear();
+                        recyclerView.scrollToPosition(adapter.getItemCount());
                     }
                 }
                 return false;
@@ -130,6 +132,7 @@ public class ChatroomActivity extends AppCompatActivity {
                                 byte[] b = baos.toByteArray();
                                 String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
                                 BackendManager.postMessage(Data.getUsername(), chatId, "image", encodedImage);
+                                recyclerView.scrollToPosition(adapter.getItemCount());
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -152,6 +155,7 @@ public class ChatroomActivity extends AppCompatActivity {
                 Log.i("mytag", "latitude is " + latLong[0] + "and longitude is " + latLong[1]);
                 // POST MESSAGE HERE
                 BackendManager.postMessage(Data.getUsername(), chatId, "text", "https://www.google.com/maps/search/?api=1&query=" + locationInfo);
+                recyclerView.scrollToPosition(adapter.getItemCount());
             }
         }
     }

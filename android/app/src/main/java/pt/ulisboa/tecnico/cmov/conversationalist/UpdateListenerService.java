@@ -20,7 +20,6 @@ import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 
 public class UpdateListenerService extends Service {
-    private Socket socket;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -45,7 +44,7 @@ public class UpdateListenerService extends Service {
 
     public void listen() {
         try {
-            socket = new Socket("10.0.2.2", 5001);
+            Socket socket = new Socket("10.0.2.2", 5001);
             var printWriter = new PrintWriter(socket.getOutputStream());
             printWriter.println(Data.getUsername());
             printWriter.flush();

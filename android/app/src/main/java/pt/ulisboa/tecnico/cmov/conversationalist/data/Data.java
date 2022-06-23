@@ -1,20 +1,21 @@
 package pt.ulisboa.tecnico.cmov.conversationalist.data;
 
-import android.database.Observable;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.Chatroom;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.JoinedChatrooms;
-import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.Message;
 
 public class Data {
     private static String username;
     private static JoinedChatrooms joinedChatrooms;
     private static MessageCache messageCache;
+
+    public synchronized static void clean() {
+        username = null;
+        joinedChatrooms = null;
+        messageCache = null;
+    }
 
     public synchronized static String getUsername() {
         if (username == null) {
@@ -28,8 +29,13 @@ public class Data {
         Data.username = username;
     }
 
-    public static void registerUsername(String username) {
-        BackendManager.addUser(username);
+    public static void registerUsername(String username, String password) {
+        BackendManager.addUser(username, password);
+        setUsername(username);
+    }
+
+    public static void login(String username, String password) {
+        BackendManager.login(username, password);
         setUsername(username);
     }
 

@@ -82,6 +82,9 @@ public class CreateChatroomActivity extends AppCompatActivity {
                         finish();
                         break;
                     case 1:
+                        BackendManager.createPrivateChatroom(Data.getUsername(), chatId);
+                        Data.updateJoinedChatrooms();
+                        finish();
                         break;
                     case 2:
                         String locationInfo = ((TextView) findViewById(R.id.showCoords)).getText().toString();

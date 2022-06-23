@@ -1,5 +1,6 @@
 from email import message
 from time import sleep
+from click import password_option
 from flask import Flask, request
 from ServerManager import ServerManager
 import json
@@ -10,7 +11,7 @@ app = Flask(__name__)
 serverManager = ServerManager("Hi")
 clientSockets = {}
 
-serverManager.addUser("user1")
+serverManager.addUser("user1", "password1")
 
 #TODO: Error handling? JSON validation?
 
@@ -66,7 +67,28 @@ def addUser():
     try:
         payload = request.get_json()
         username = payload['username']
-        serverManager.addUser(username)
+        password = payload['password']
+        serverManager.addUser(username, password)
+        return makeOkResponse()
+    except ValueError as e:
+        return makeErrorResponse(str(e))
+
+"""
+EXAMPLE REQUEST
+{
+    "username": "value1",
+    "password": "password1"
+}
+EXAMPLE RESPONSE
+{}
+"""
+@app.route("/login", methods=["POST"])
+def login():
+    try:
+        payload = request.get_json()
+        username = payload['username']
+        password = payload['password']
+        serverManager.login(username, password)
         return makeOkResponse()
     except ValueError as e:
         return makeErrorResponse(str(e))
@@ -117,6 +139,27 @@ def createPublicChatroom():
         return makeOkResponse()
     except ValueError as e:
         return makeErrorResponse(str(e))
+
+"""
+EXAMPLE REQUEST
+{
+    "chatId": "1",
+    "username": "value1"
+}
+EXAMPLE RESPONSE
+{}
+"""
+@app.route("/createPrivateChatroom", methods=["POST"])
+def createPrivateChatroom():
+    try:
+        payload = request.get_json()
+        chatId = payload['chatId']
+        username = payload['username']
+        serverManager.createPrivateChatroom(chatId, username)
+        return makeOkResponse()
+    except ValueError as e:
+        return makeErrorResponse(str(e))
+
 
 """
 EXAMPLE REQUEST

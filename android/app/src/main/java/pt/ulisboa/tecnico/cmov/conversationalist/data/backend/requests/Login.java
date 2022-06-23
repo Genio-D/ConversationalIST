@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests;
 
-public class AddUser {
+public class Login {
     private final String username;
     private final String password;
 
-    public AddUser(String username, String password) {
+    public Login(String username, String password) {
         this.username = username;
         this.password = password;
     }

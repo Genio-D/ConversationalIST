@@ -1,8 +1,9 @@
 from datetime import datetime
 
 class User:
-    def __init__(self, id):
+    def __init__(self, id, password):
         self.id = id
+        self.password = password
         #stores joined chatrooms
         self.joinedChatrooms = set()
 

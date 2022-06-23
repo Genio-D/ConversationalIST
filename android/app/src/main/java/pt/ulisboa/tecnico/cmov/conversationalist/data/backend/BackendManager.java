@@ -23,8 +23,10 @@ import okhttp3.RequestBody;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.AddUser;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.CreateGeoChatroom;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.CreatePrivateChatroom;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.CreatePublicChatroom;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.JoinRoom;
+import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.Login;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.requests.PostMessage;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.GeoChatrooms;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.JoinedChatrooms;
@@ -85,9 +87,14 @@ public class BackendManager {
         return adapter.toJson(obj);
     }
 
-    public static void addUser(String username) {
-        var request = createRequest(new AddUser(username), AddUser.class);
+    public static void addUser(String username, String password) {
+        var request = createRequest(new Login(username, password), Login.class);
         post("/addUser", request);
+    }
+
+    public static void login(String username, String password) {
+        var request = createRequest(new Login(username, password), Login.class);
+        post("/login", request);
     }
 
     public static void postMessage(String username, String chatId, String messageType, String content) {
@@ -100,12 +107,18 @@ public class BackendManager {
         post("/createPublicChatroom", request);
     }
 
+    public static void createPrivateChatroom(String username, String chatId) {
+        var request = createRequest(new CreatePrivateChatroom(username, chatId), CreatePrivateChatroom.class);
+        post("/createPrivateChatroom", request);
+    }
+
     public static void createGeoChatroom(String username,
                                          String chatId,
                                          double latitude,
                                          double longitude,
                                          double radius) {
-        var request = createRequest(new CreateGeoChatroom(username, chatId, latitude, longitude, radius), CreateGeoChatroom.class);
+        var geoChatroom = new CreateGeoChatroom(username, chatId, latitude, longitude, radius);
+        var request = createRequest(geoChatroom, CreateGeoChatroom.class);
         post("/createGeoChatroom", request);
     }
 

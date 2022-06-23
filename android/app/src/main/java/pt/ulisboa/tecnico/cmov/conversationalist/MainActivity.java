@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Data.clean();
     }
 
     private static boolean validUsername(String username) {
@@ -28,9 +29,11 @@ public class MainActivity extends AppCompatActivity {
     public void onRegister(View v) {
         EditText usernameEditText = findViewById(R.id.usernameEditText);
         var username = usernameEditText.getText().toString();
+        EditText passwordEditText = findViewById(R.id.passwordEditText);
+        var password = passwordEditText.getText().toString();
         try {
             if (validUsername(username)) {
-                Data.registerUsername(username);
+                Data.registerUsername(username, password);
                 SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("username", username);
@@ -51,10 +54,11 @@ public class MainActivity extends AppCompatActivity {
     public void onLogin(View v) {
         EditText usernameEditText = findViewById(R.id.usernameEditText);
         var username = usernameEditText.getText().toString();
+        EditText passwordEditText = findViewById(R.id.passwordEditText);
+        var password = passwordEditText.getText().toString();
         try {
             if (validUsername(username)) {
-                Data.setUsername(username);
-                Data.getJoinedChatrooms();
+                Data.login(username, password);
                 SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("username", username);

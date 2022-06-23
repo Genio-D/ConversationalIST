@@ -1,10 +1,5 @@
 package pt.ulisboa.tecnico.cmov.conversationalist;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,15 +8,18 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,7 +27,6 @@ import pt.ulisboa.tecnico.cmov.conversationalist.data.Data;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.BackendManager;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.Chatroom;
 import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.GeoChatroom;
-import pt.ulisboa.tecnico.cmov.conversationalist.data.backend.responses.PublicChatroom;
 
 public class JoinChatroomActivity extends AppCompatActivity {
 
@@ -38,12 +35,23 @@ public class JoinChatroomActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
 
+    private static List<? extends Chatroom> filterAlreadyJoined(List<Chatroom> joinedChatrooms, List<? extends Chatroom> allChatrooms) {
+        var ret = new ArrayList<>(allChatrooms);
+        for (var chat : allChatrooms) {
+            if (joinedChatrooms.contains(chat)) {
+                ret.remove(chat);
+            }
+        }
+        return ret;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_chatroom);
-        var publicChatrooms = new ArrayList<PublicChatroom>(BackendManager.getPublicChatrooms().getList());
-        var geoChatrooms = new ArrayList<GeoChatroom>(BackendManager.getGeoChatrooms().getList());
+        var joinedChatrooms = Data.getJoinedChatrooms().getChatrooms();
+        var publicChatrooms = filterAlreadyJoined(joinedChatrooms, BackendManager.getPublicChatrooms().getList());
+        var geoChatrooms = filterAlreadyJoined(joinedChatrooms, BackendManager.getGeoChatrooms().getList());
         var chatrooms = new ArrayList<Chatroom>();
         chatrooms.addAll(publicChatrooms);
         chatrooms.addAll(geoChatrooms);
@@ -60,6 +68,7 @@ public class JoinChatroomActivity extends AppCompatActivity {
                 Data.updateJoinedChatrooms();
                 var intent = new Intent(this, ChatroomActivity.class);
                 intent.putExtra("chatId", chat.getChatId());
+                finish();
                 startActivity(intent);
             }
             if(Objects.equals(chat.getType(), "geo")) {
@@ -82,6 +91,7 @@ public class JoinChatroomActivity extends AppCompatActivity {
                         Data.updateJoinedChatrooms();
                         var intent = new Intent(this, ChatroomActivity.class);
                         intent.putExtra("chatId", chat.getChatId());
+                        finish();
                         startActivity(intent);
                     }
                 }

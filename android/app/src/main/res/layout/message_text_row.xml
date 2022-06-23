@@ -16,7 +16,7 @@
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#8000FF00"
+            android:background="#CECCDFFF"
             android:text="time" />
 
         <TextView
@@ -24,9 +24,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#80FF0000"
-            android:backgroundTint="#FF0000"
-            android:text="Author_Name" />
+            android:background="#D1B0FF"
+            android:backgroundTint="#D1B0FF"
+            android:text="Author_Name"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <TextView
@@ -34,7 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="TextView"
         android:autoLink="web"
-        android:linksClickable="true"/>
+        android:linksClickable="true"
+        android:text="TextView"
+        android:textSize="16sp" />
 </LinearLayout>

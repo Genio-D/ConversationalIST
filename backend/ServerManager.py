@@ -1,5 +1,6 @@
 import json
 from multiprocessing.sharedctypes import Value
+from PrivateChatroom import PrivateChatroom
 from User import User
 from Chatroom import Chatroom
 from PublicChatroom import PublicChatroom
@@ -18,11 +19,16 @@ class ServerManager:
         response = {'text' : self.greetingMessage}
         return json.dumps(response)
 
-    def addUser(self, id):
-        if id not in [user.id for user in self.users]:
-            self.users.append(User(id))
+    def addUser(self, username, password):
+        if username not in [user.id for user in self.users]:
+            self.users.append(User(username, password))
             return True
         raise ValueError("User already exists")
+
+    def login(self, username, password):
+        user = self.findUser(username)
+        if user.password != password:
+            raise ValueError("incorrect username/password")
 
     def addChatroom(self, chatroom, user):
         if chatroom.id not in [chat.id for chat in self.chatrooms]:
@@ -34,6 +40,11 @@ class ServerManager:
 
     def createPublicChatroom(self, chatId, username):
         newChat = PublicChatroom(chatId)
+        user = self.findUser(username)
+        self.addChatroom(newChat, user)
+
+    def createPrivateChatroom(self, chatId, username):
+        newChat = PrivateChatroom(chatId)
         user = self.findUser(username)
         self.addChatroom(newChat, user)
 

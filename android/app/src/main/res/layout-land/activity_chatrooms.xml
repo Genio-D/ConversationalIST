@@ -37,7 +37,7 @@
         android:layout_width="285dp"
         android:layout_height="55dp"
         android:layout_marginStart="63dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="32dp"
         android:onClick="onJoinChatroom"
         android:text="@string/join_new_chatroom"
@@ -45,6 +45,17 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goCreateChatroomButton" />
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="508dp"
+        android:layout_marginTop="44dp"
+        android:onClick="onLogOut"
+        android:text="@string/log_out"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goJoinChatroomButton" />
 
     <TextView
         android:id="@+id/textView3"

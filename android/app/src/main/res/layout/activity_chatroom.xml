@@ -14,17 +14,25 @@
 
         <TextView
             android:id="@+id/chatIdTextView"
-            android:layout_width="350dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:text="Lore Ipsum" />
 
+        <Button
+            android:id="@+id/leaveRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/leave_room" />
+
         <ImageButton
             android:id="@+id/shareButton"
-            android:layout_width="wrap_content"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="Share with App Link"
             app:srcCompat="?attr/actionModeShareDrawable" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

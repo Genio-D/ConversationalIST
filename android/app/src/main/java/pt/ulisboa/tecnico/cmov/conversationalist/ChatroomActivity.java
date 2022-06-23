@@ -24,6 +24,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -106,7 +107,11 @@ public class ChatroomActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        ((Button) findViewById(R.id.leaveRoom)).setOnClickListener(v -> {
+            BackendManager.leaveRoom(Data.getUsername(), chatId);
+            Data.updateJoinedChatrooms();
+            finish();
+        });
         var br = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

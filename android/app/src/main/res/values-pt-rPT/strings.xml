@@ -17,4 +17,5 @@
     <string name="pick_location">Escolher localização</string>
     <string name="radius">Raio (m)</string>
     <string name="log_out">Acabar sessão</string>
+    <string name="leave_room">Sair da sala</string>
 </resources>

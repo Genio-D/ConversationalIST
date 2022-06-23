@@ -129,4 +129,9 @@ public class BackendManager {
         var request = createRequest(new JoinRoom(chatId, username), JoinRoom.class);
         post("/joinRoom", request);
     }
+
+    public static void leaveRoom(String username, String chatId) {
+        var request = createRequest(new JoinRoom(chatId, username), JoinRoom.class);
+        post("/leaveRoom", request);
+    }
 }

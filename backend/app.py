@@ -267,6 +267,26 @@ def joinRoom():
     except ValueError as e:
         return makeErrorResponse(str(e))
 
+"""
+EXAMPLE REQUEST
+{
+    "chatId": "1",
+    "username": "value1"
+}
+EXAMPLE RESPONSE
+{}
+"""
+@app.route("/leaveRoom", methods=["POST"])
+def leaveRoom():
+    try:
+        payload = request.get_json()
+        username = payload['username']
+        chatId = payload['chatId']
+        serverManager.leaveRoom(username, chatId)
+        return makeOkResponse()
+    except ValueError as e:
+        return makeErrorResponse(str(e))
+
 def makeErrorResponse(errorMessage):
     return {'errorMessage' : errorMessage, 'error': True}
 

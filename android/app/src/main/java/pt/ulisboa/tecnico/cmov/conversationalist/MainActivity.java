@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             if (validUsername(username)) {
                 Data.registerUsername(username);
-                Intent previousActivityIntent = getIntent();
-                Log.i("mytag", "got a login intent");
                 SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("username", username);
@@ -57,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
             if (validUsername(username)) {
                 Data.setUsername(username);
                 Data.getJoinedChatrooms();
+                SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("username", username);
+                editor.apply();
+                Log.i("mytag", "wrote " + username + " to shared preferences");
+                Intent data = new Intent();
+                setResult(RESULT_OK, data);
+                finish();
             } else {
                 throw new RuntimeException("invalid username");
             }

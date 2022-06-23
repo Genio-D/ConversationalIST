@@ -111,7 +111,7 @@ public class ChatroomActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 var path = intent.getStringExtra("path");
-                Log.d("Broadcast receiver", "new message: " + path);
+                Log.d("data update", "chatroom: " + path);
                 adapter.notifyItemInserted(adapter.getItemCount());
             }
         };

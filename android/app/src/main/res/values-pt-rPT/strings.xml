@@ -11,8 +11,10 @@
     <string name="create_chatroom">Criar sala</string>
     <string name="available_chatrooms">Salas disponíveis</string>
     <string name="enter_username">Insira o nome de utilizador</string>
+    <string name="enter_password">Insira palavra chave</string>
     <string name="register">Registar</string>
     <string name="log_in">Iniciar sessão</string>
     <string name="pick_location">Escolher localização</string>
     <string name="radius">Raio (m)</string>
+    <string name="log_out">Acabar sessão</string>
 </resources>

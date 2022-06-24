@@ -13,7 +13,6 @@ class ServerManager:
         self.greetingMessage = greetingMessage
         self.users = []
         self.chatrooms = []
-        self.chatroomIdCounter = 0
 
     def greeting(self):
         response = {'text' : self.greetingMessage}
@@ -62,9 +61,6 @@ class ServerManager:
         messageNumber = len(chat.getMessages()) - 1
         return memberList, messageNumber 
 
-    def getNextId(self):
-        self.chatroomIdCounter += 1
-        return str(self.chatroomIdCounter) 
 
     def getPublicChatrooms(self):
         return [chat.toDict() for chat in self.chatrooms if type(chat) is PublicChatroom]

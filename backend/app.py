@@ -1,9 +1,5 @@
-from email import message
-from time import sleep
-from click import password_option
 from flask import Flask, request
 from ServerManager import ServerManager
-import json
 import threading
 import socket
 
@@ -38,13 +34,13 @@ def handleClient(client):
 #    client.sendall(str.encode("gotcha, thanks " + username + "\n"))
 
 def notifyClients(memberList, chatId, messageNumber):
-    try:
         for clientName, clientSocket in clientSockets.items():
             if clientName in memberList:
-                clientSocket.sendall(str.encode(f"{chatId}/{messageNumber}\n"))
-                print(f"notified {clientName} with -> {chatId}/{messageNumber}")
-    except ValueError as e:
-        print(e)
+                try:
+                    clientSocket.sendall(str.encode(f"{chatId}/{messageNumber}\n"))
+                    print(f"notified {clientName} with -> {chatId}/{messageNumber}")
+                except (ValueError, BrokenPipeError) as e:
+                    print(e)
 
 
 threading.Thread(target=startServerSocket).start()
@@ -257,38 +253,6 @@ def getMessage(chatId, messageNumber):
         return makeOkResponse(chatInfo)
     except ValueError as e:
         return makeErrorResponse(str(e))
-"""
-EXAMPLE REQUEST
-{
-	"chatroomId":"1",
-    "list":[0, 1, 2]
-}
-EXAMPLE RESPONSE
-{
-    "list": [
-        {
-            "author": "value1",
-            "content": "supercool",
-            "timestamp": "2022-05-31T21:20:21.951677",
-            "type": "this"
-        },
-        {
-            "author": "value1",
-            "content": "supercool2",
-            "timestamp": "2022-05-31T21:20:26.019176",
-            "type": "this"
-        }
-    ]
-}
-
-@app.route("/getChatroomMessages", methods=["GET"])
-def getChatroomMessages():
-    payload = request.get_json()
-    chatroomId = payload['chatroomId']
-    messagesToRetrieveList = payload['list']
-    messageList = serverManager.getChatroomMessages(chatroomId, messagesToRetrieveList)
-    return makeOkResponse({'list' : messageList})
-"""
 
 """
 EXAMPLE REQUEST

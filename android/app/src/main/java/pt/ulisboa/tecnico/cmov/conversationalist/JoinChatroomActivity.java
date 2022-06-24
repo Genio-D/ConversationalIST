@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -94,6 +95,10 @@ public class JoinChatroomActivity extends AppCompatActivity {
                         finish();
                         startActivity(intent);
                     }
+                    else {
+                        var toast = Toast.makeText(this, "You're too far away", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 }
                 else {
                     Log.i("mytag", "mlastknownlocation is null");
@@ -101,16 +106,6 @@ public class JoinChatroomActivity extends AppCompatActivity {
             }
         });
         chatroomsListView.setAdapter(adapter);
-    }
-
-    public static double distance_Between_LatLong(double lat1, double lon1, double lat2, double lon2) {
-        lat1 = Math.toRadians(lat1);
-        lon1 = Math.toRadians(lon1);
-        lat2 = Math.toRadians(lat2);
-        lon2 = Math.toRadians(lon2);
-
-        double earthRadius = 6371.01; //Kilometers
-        return earthRadius * Math.acos(Math.sin(lat1)*Math.sin(lat2) + Math.cos(lat1)*Math.cos(lat2)*Math.cos(lon1 - lon2));
     }
 
     private void getLocationPermission() {

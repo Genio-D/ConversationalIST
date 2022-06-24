@@ -68,23 +68,25 @@ public class NotificationService extends Service {
             public void onReceive(Context context, Intent intent) {
                 var path = intent.getStringExtra("path");
                 var message = Data.getMessageCache().getMessage(path);
-                var clickIntent = new Intent(context, ChatroomActivity.class);
-                var chatId = Data.getChatIdFromPath(path);
-                clickIntent.putExtra("chatId", chatId);
-                Log.d("data update", "Notification: " + chatId);
+                if(!Objects.equals(message.getAuthor(), Data.getUsername())) {
+                    var clickIntent = new Intent(context, ChatroomActivity.class);
+                    var chatId = Data.getChatIdFromPath(path);
+                    clickIntent.putExtra("chatId", chatId);
+                    Log.d("data update", "Notification: " + chatId);
 //                clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                var builder= new NotificationCompat.Builder(context, "notifications")
-                        .setSmallIcon(android.R.drawable.sym_def_app_icon)
-                        .setContentTitle(message.getAuthor() + " in " + chatId)
-                        .setContentText(message.getType() == ChatMessage.TEXT ? message.getContent() : "Posted an image")
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setAutoCancel(true)
-                        .setTimeoutAfter(60000)
-                        .setContentIntent(PendingIntent.getActivity(context, 0, clickIntent, PendingIntent.FLAG_IMMUTABLE));
-                var notificationManager = NotificationManagerCompat.from(context);
-                notificationId +=  1;
-                notificationManager.notify(notificationId, builder.build());
+                    var builder = new NotificationCompat.Builder(context, "notifications")
+                            .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                            .setContentTitle(message.getAuthor() + " in " + chatId)
+                            .setContentText(message.getType() == ChatMessage.TEXT ? message.getContent() : "Posted an image")
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            .setAutoCancel(true)
+                            .setTimeoutAfter(60000)
+                            .setContentIntent(PendingIntent.getActivity(context, 0, clickIntent, PendingIntent.FLAG_IMMUTABLE));
+                    var notificationManager = NotificationManagerCompat.from(context);
+                    notificationId += 1;
+                    notificationManager.notify(notificationId, builder.build());
+                }
             }
         };
         var intentFilter = new IntentFilter("data update");
